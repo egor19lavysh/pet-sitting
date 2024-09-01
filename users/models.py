@@ -1,11 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from phonenumber_field.modelfields import PhoneNumberField
 
 # use get_user_model()
 
 class User(AbstractUser):
     photo = models.ImageField(upload_to="users/", null=True, verbose_name="Фотография")
-    birth_date = models.DateField(verbose_name="Дата рождения")
+    phone = PhoneNumberField(region='RU')
+    birth_date = models.DateField(verbose_name="Дата рождения", blank=False, null=True)
     about = models.TextField()
     location = models.CharField(max_length=255)
     is_petsitter = models.BooleanField(default=False)
@@ -21,6 +23,9 @@ class Petsitter(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     experience = models.CharField(max_length=255, choices=CHOICES)
+    price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, default=0.0)
+
+
 
 
 
