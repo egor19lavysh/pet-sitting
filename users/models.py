@@ -5,7 +5,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 # use get_user_model()
 
 class User(AbstractUser):
-    photo = models.ImageField(upload_to="users/", null=True, verbose_name="Фотография")
+    photo = models.ImageField(upload_to="users/", null=True, verbose_name="Фотография", blank=True)
     phone = PhoneNumberField(region='RU')
     birth_date = models.DateField(verbose_name="Дата рождения", blank=False, null=True)
     about = models.TextField()

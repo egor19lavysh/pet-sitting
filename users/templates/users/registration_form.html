@@ -4,36 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registration</title>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            let checkbox = document.getElementById('id_is_petsitter');
-            let petsitterFields = document.getElementById('petsitter_fields');
-
-            // Функция для скрытия/отображения полей
-            function togglePetsitterFields() {
-                if (checkbox.checked) {
-                    petsitterFields.style.display = 'block';
-                } else {
-                    petsitterFields.style.display = 'none';
-                }
-            }
-
-            // Применить обработчик события изменения состояния
-            checkbox.addEventListener('change', togglePetsitterFields);
-
-            // Изначальная проверка состояния
-            togglePetsitterFields();
-        });
-    </script>
 </head>
 <body>
     <h2>Регистрация</h2>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ user_form.as_p }}
-        <div id="petsitter_fields" style="display:none;">
-            {{ petsitter_form.as_p }}
-        </div>
+        {{ form.as_p }}
         <button type="submit">Зарегистрироваться</button>
     </form>
 </body>
