@@ -1,13 +1,32 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
-from .forms import RegisterUserForm, RegisterPetsitterForm
+from .forms import RegisterUserForm, RegisterPetsitterForm, LoginUserForm
 from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.decorators import login_required
+from .services import change_user_status
 
 
 def login_user(request):
-    return HttpResponse("Login")
+    if request.method == "POST":
+        form = LoginUserForm(request.POST)
+
+        if form.is_valid():
+            cd = form.cleaned_data
+            user = authenticate(request, username=cd['login'], password=cd['password'])
+
+            if user and user.is_active:
+                login(request, user)
+
+                return HttpResponseRedirect(reverse("main:index"))
+            else:
+                messages.error(request, "Your account is disabled or unknown")
+    else:
+
+        form = LoginUserForm()
+
+    return render(request, "users/login.html", {"form" : form})
 
 def logout_user(request):
     logout(request)
@@ -36,6 +55,7 @@ def register_user(request):
         user_form = RegisterUserForm()
         return render(request, "users/registration_form.html", {'form': user_form})
 
+@login_required(login_url="/users/login/")
 def register_petsitter(request):
     if request.method == "POST":
 
@@ -46,7 +66,8 @@ def register_petsitter(request):
             petsitter.user = request.user
             petsitter.save()
 
-            messages.success(request, 'You have singed up successfully as petsitter!')
+            change_user_status(id=request.user.id)
+
             return HttpResponseRedirect(reverse("main:index"))
 
         else:
@@ -58,7 +79,7 @@ def register_petsitter(request):
     return render(request, "users/registration_form.html", {'form': petsitter_form})
     
 def register_types(request):
-    pass
+    return render(request, "users/types.html")
 
             
 

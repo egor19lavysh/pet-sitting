@@ -1,0 +1,16 @@
+<h1> Авторизация <h1>
+
+    {% for message in messages %}
+    <div class="message {{ message.tags }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+    
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <p><button type="submit"> Войти </button></p>
+    </form>
+    
+<a class="authorization" href="{% url "users:register_user"%}">Зарегистрироваться</a>
+    

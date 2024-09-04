@@ -9,7 +9,14 @@ class RegisterUserForm(forms.ModelForm):
 
     class Meta:
         model=User
-        fields=["username", "first_name", "last_name", "email", "photo", "phone", "birth_date", "about", "location", "password", "is_petsitter"]
+        fields=["username", "first_name", "last_name", "email", "photo", "phone", "birth_date", "about", "location", "password",]
+        labels = {
+            "username" : "login"
+        }
+
+class LoginUserForm(forms.Form):
+    login = forms.CharField(max_length=255, label="login", widget=forms.TextInput(attrs={"class" : "username_input"}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={"class" : "password_input"}))
 
 class RegisterPetsitterForm(forms.ModelForm):
     class Meta:
