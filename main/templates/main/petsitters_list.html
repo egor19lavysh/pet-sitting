@@ -1,0 +1,10 @@
+<h1>Petsitters</h1>
+<ul>
+{% for petsitter in object_list %}
+    <li>{{ petsitter.first_name}} {{petsitter.last_name }}</li>
+    <li>{{ petsitter.location }}</li>
+    <a href="{% url "orders:create_order" petsitter.id %}"> Оставить заявку </a>
+{% empty %}
+    <li>No articles yet.</li>
+{% endfor %}
+</ul>
