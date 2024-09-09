@@ -1,8 +1,8 @@
 from django import forms
 from .models import Pet
 
-class PetForm(forms.Form):
+class PetForm(forms.ModelForm):
 
     class Meta:
         model=Pet
-        fields="__all__"
+        fields=["photo", "name", "age", "category", "breed", "weight", "certificate", "info", ]

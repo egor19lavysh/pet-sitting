@@ -21,7 +21,7 @@ class Pet(models.Model):
             (">20", "Тяжелый (больше 15 кг)")
         )
 
-    photo = models.ImageField(upload_to="pets/", blank=True)
+    photo = models.ImageField(upload_to="pets/", blank=True, default="pets/default.jpg")
     name = models.CharField(max_length=255)
     age = models.DecimalField(max_digits=3, decimal_places=1)
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
