@@ -1,6 +1,10 @@
+from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
+from django.urls import reverse, reverse_lazy
 from .forms import OrderForm
 from users.models import User
+from django.views.generic.edit import UpdateView, DeleteView
+from .models import Order
 
 def create_order(request, petsitter_id):
     if request.method == "POST":
@@ -21,5 +25,19 @@ def create_order(request, petsitter_id):
         form = OrderForm()
     
     return render(request, "orders/create.html", {"form" : form})
+
+class UpdateOrderView(UpdateView):
+    model = Order
+    fields=["title", "photo", "name", "category", 
+            "breed", "need_walking", "need_sitting", 
+            "first_day", "last_day", "price", 
+            "age", "weight", "certificate", "info"
+            ]
+    template_name_suffix = "_update_form"
+    success_url = reverse_lazy("main:index")
+
+class DeleteOrderView(DeleteView):
+    model = Order 
+    success_url = reverse_lazy("main:show_petsitters")
 
 

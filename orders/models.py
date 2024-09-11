@@ -18,7 +18,6 @@ class Order(models.Model):
             (">20", "Тяжелый (больше 15 кг)")
         )
 
-    title = models.CharField(max_length=255)
     photo = models.ImageField(upload_to="pets/", blank=True)
     name = models.CharField(max_length=255)
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
@@ -55,3 +54,19 @@ class Order(models.Model):
     def save(self, *args, **kwargs):
         self.clean()
         super().save(*args, **kwargs)
+
+    def __str__(self):
+        prefix = "Завяка на"
+
+        if self.need_sitting:
+            prefix += " передержку"
+
+            if self.need_walking:
+
+                prefix += " и выгул"
+        duration = self.last_day - self.first_day
+        prefix += f" питомца на {duration.days} дня"
+
+        return prefix
+
+
