@@ -1,8 +1,8 @@
 import datetime
 from django.db import models
 from django.forms import ValidationError
-from pet.models import Category, Breed, Pet
-from users.models import User, Petsitter
+from pet.models import Category, Breed
+from users.models import User
 
 class Order(models.Model):
     class STATUS_CHOICES:

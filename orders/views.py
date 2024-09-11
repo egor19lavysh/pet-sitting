@@ -1,11 +1,14 @@
-from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse_lazy
 from .forms import OrderForm
 from users.models import User
 from django.views.generic.edit import UpdateView, DeleteView
 from .models import Order
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from .mixins import OrderOwnerRequiredMixin
 
+@login_required(login_url="/users/login/")
 def create_order(request, petsitter_id):
     if request.method == "POST":
 
@@ -26,7 +29,7 @@ def create_order(request, petsitter_id):
     
     return render(request, "orders/create.html", {"form" : form})
 
-class UpdateOrderView(UpdateView):
+class UpdateOrderView(LoginRequiredMixin, OrderOwnerRequiredMixin, UpdateView):
     model = Order
     fields=["title", "photo", "name", "category", 
             "breed", "need_walking", "need_sitting", 
@@ -35,9 +38,11 @@ class UpdateOrderView(UpdateView):
             ]
     template_name_suffix = "_update_form"
     success_url = reverse_lazy("main:index")
+    login_url = "users:login"
 
-class DeleteOrderView(DeleteView):
+class DeleteOrderView(LoginRequiredMixin, OrderOwnerRequiredMixin, DeleteView):
     model = Order 
     success_url = reverse_lazy("main:show_petsitters")
+    login_url = "users:login"
 
 
