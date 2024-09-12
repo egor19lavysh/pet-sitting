@@ -39,7 +39,7 @@ class Order(models.Model):
 
     status = models.CharField(max_length=255, choices=STATUS_CHOICES.CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
-    created_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def clean(self):
         if self.last_day - self.first_day < datetime.timedelta(days=0):

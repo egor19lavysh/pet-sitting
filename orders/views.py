@@ -31,7 +31,7 @@ def create_order(request, petsitter_id):
 
 class UpdateOrderView(LoginRequiredMixin, OrderOwnerRequiredMixin, UpdateView):
     model = Order
-    fields=["title", "photo", "name", "category", 
+    fields=["photo", "name", "category", 
             "breed", "need_walking", "need_sitting", 
             "first_day", "last_day", "price", 
             "age", "weight", "certificate", "info"

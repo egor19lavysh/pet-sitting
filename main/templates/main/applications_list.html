@@ -1,0 +1,12 @@
+<h1>Заявки</h1>
+<ul>
+{% for application in object_list %}
+<a href="{% url "main:application_detail" application.owner.username application.id %}">
+    <li>{{ application }}</li>
+    <p> {{application.status }} </p>
+    <p>{{ application.created_at}}</p>
+</a>
+{% empty %}
+    <li>No applications yet.</li>
+{% endfor %}
+</ul>

@@ -1,0 +1,30 @@
+<h1> {{ object }} </h1>
+
+{% if object.photo %}
+<img src="{{object.photo.url}}">
+{% endif %}
+<h2> {{ object.name}} </h2>
+<p> {{ object.category}} </p>
+<p> {{ object.breed}} </p>
+<p> Нужен выгул: {{ object.need_walking}} </p>
+<p> Нужна передержка: {{ object.need_sitting}} </p>
+<p> C {{ object.first_day}} по  {{ object.last_day }}</p>
+
+<p> Цена: {{ object.price }} р./день </p>
+
+<ul> <h2> О питомце </h2> 
+<li> Возраст: {{ object.age }} </li>
+<li> Вес: {{ object.weight }} </li>
+<li> Есть привочный сертификат: {{ object.certificate }} </li>
+<li> Ситтер: {{ object.petsitter.username }} </li>
+
+</ul>
+
+<h3> Статус: {{ object.status }} </h3>
+
+<p> Последнее изменение {{ object.updated_at }}</p>
+
+<a href="{% url "orders:update_order" object.id %}"> Изменить заявку </a>
+<a href="{% url "orders:delete_order" object.id %}"> Отменить заявку </a>
+
+
