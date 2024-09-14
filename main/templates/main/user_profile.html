@@ -6,7 +6,9 @@
 </head>
 <body>
     <h1>{{ user.username }}</h1>
+    {% if user.photo.url != None %}
     <img src="{{ user.photo.url }}">
+    {% endif %}
     <p> {{ user.first_name}} {{ user.last_name }}</p>
     <p> Дата рождения: {{ user.birth_date }} </p>
     <p> {{ user.first_name}} </p>

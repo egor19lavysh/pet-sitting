@@ -24,7 +24,9 @@
 
 <p> Последнее изменение {{ object.updated_at }}</p>
 
+{% if request.user == object.owner %}
 <a href="{% url "orders:update_order" object.id %}"> Изменить заявку </a>
 <a href="{% url "orders:delete_order" object.id %}"> Отменить заявку </a>
+{% endif %}
 
 
