@@ -65,7 +65,7 @@ class Order(models.Model):
 
                 prefix += " и выгул"
         duration = self.last_day - self.first_day
-        prefix += f" питомца на {duration.days} дня"
+        prefix += f" питомца на {duration.days} дня от {self.owner.first_name} {self.owner.last_name}"
 
         return prefix
 

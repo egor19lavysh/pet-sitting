@@ -29,4 +29,11 @@
 <a href="{% url "orders:delete_order" object.id %}"> Отменить заявку </a>
 {% endif %}
 
+{% if request.user == object.petsitter %}
+<a href="{% url "main:accept_application" object.id %}"> Принять </a>
+<a href="{% url "main:reject_application" object.id %}"> Отклонить </a>
+{% endif %}
+
+
+
 
