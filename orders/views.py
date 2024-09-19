@@ -1,4 +1,4 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from .forms import OrderForm
 from users.models import User
@@ -7,6 +7,7 @@ from .models import Order
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .mixins import OrderOwnerRequiredMixin
+from pet.models import Pet
 
 @login_required(login_url="/users/login/")
 def create_order(request, petsitter_id):
@@ -23,10 +24,43 @@ def create_order(request, petsitter_id):
 
             order.save()
 
+            if 'pet_id' in request.session:
+                del request.session['pet_id']
+
             return redirect("main:index")
     else:
-        form = OrderForm()
-    
+        if "pet_id" in request.session:
+            pet = Pet.objects.get(id=request.session["pet_id"])
+            if pet:
+                if pet.photo:
+                    form = OrderForm(initial={
+                        'photo': pet.photo,
+                        'name': pet.name,
+                        'category': pet.category,
+                        'breed': pet.breed,
+                        'age': pet.age,
+                        'weight': pet.weight,
+                        'certificate': pet.certificate,
+                        'info': pet.info
+                        })
+                else:
+                    form = OrderForm(initial={
+                            'name': pet.name,
+                            'category': pet.category,
+                            'breed': pet.breed,
+                            'age': pet.age,
+                            'weight': pet.weight,
+                            'certificate': pet.certificate,
+                            'info': pet.info
+                        })
+                
+                    
+            else:
+                form = OrderForm()
+        else:
+            form = OrderForm()
+
+    #del request.session["pet_id"]
     return render(request, "orders/create.html", {"form" : form})
 
 class UpdateOrderView(LoginRequiredMixin, OrderOwnerRequiredMixin, UpdateView):

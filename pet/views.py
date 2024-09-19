@@ -36,9 +36,9 @@ class PetDetailView(LoginRequiredMixin, PetOwnerRequiredMixin, DetailView):
 
 @login_required(login_url="/users/login/")
 @owner_required
-def update_pet(request, id: int):
+def update_pet(request, pk: int):
     try:
-        pet = get_object_or_404(Pet, id=id)
+        pet = get_object_or_404(Pet, id=pk)
     except Exception:
         raise Http404('Такого пэта не существует')
     if request.method =='POST':
@@ -46,7 +46,7 @@ def update_pet(request, id: int):
         if form.is_valid():
             form.save()
             
-            return redirect(f"/pet/{id}")
+            return redirect(f"/pet/{pk}")
     else:
         form = PetForm(instance = pet)
         context ={
@@ -56,9 +56,9 @@ def update_pet(request, id: int):
 
 @login_required(login_url="/users/login/")
 @owner_required
-def delete_pet(request, id: int):
+def delete_pet(request, pk: int):
     try:
-        pet = get_object_or_404(Pet, id=id)
+        pet = get_object_or_404(Pet, id=pk)
     except Exception:
         raise Http404('Такого пэта не существует')
     
@@ -68,3 +68,8 @@ def delete_pet(request, id: int):
     else:
         return render(request, 'pet/delete.html', {"name" : pet.name})
 
+@login_required(login_url="/users/login/")
+@owner_required
+def select_pet(request, pk):
+    request.session["pet_id"] = pk
+    return redirect("main:show_petsitters")

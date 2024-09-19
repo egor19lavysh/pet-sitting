@@ -7,9 +7,9 @@ from users.models import User
 class Order(models.Model):
     class STATUS_CHOICES:
         CHOICES = (
-            ("waiting", "В ождании"),
-            ("accepted", "Принято"),
-            ("rejected", "Отвергнуто")
+            ("В ождании", "В ождании"),
+            ("Принято", "Принято"),
+            ("Отклонено", "Отклонено")
         )
     class WEIGHT_CHOICES:
         CHOICES = (
