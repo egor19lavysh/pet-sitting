@@ -60,23 +60,29 @@ class ApplicationDetailView(LoginRequiredMixin, OrderOwnerPetsitterRequiredMixin
     template_name="main/application_detail.html"
     login_url = "users:login"
 
-@user_restricted_access  
+
 def accept_app_status(request, pk : int):
     app = Order.objects.get(id=pk)
     if app:
-        app.status = "accepted"
-        app.save()
-        return redirect("main:index")
+        if request.user in [app.petsitter, app.owner]:
+            app.status = "accepted"
+            app.save()
+            return redirect("main:index")
+        else:
+            return HttpResponse("У вас нет доступа к этому ресурсу.")
     else:
         return HttpResponse("Что-то пошло не так...")
     
-@user_restricted_access  
+
 def reject_app_status(request, pk : int):
     app = Order.objects.get(id=pk)
     if app:
-        app.status = "rejected"
-        app.save()
-        return redirect("main:index")
+        if request.user in [app.petsitter, app.owner]:
+            app.status = "rejected"
+            app.save()
+            return redirect("main:index")
+        else:
+            return HttpResponse("У вас нет доступа к этому ресурсу.")
     else:
         return HttpResponse("Что-то пошло не так...")
     
