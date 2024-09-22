@@ -5,7 +5,6 @@ from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from orders.models import Order
 from django.db.models import Q
-from .decorators import user_restricted_access
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .mixins import OrderOwnerPetsitterRequiredMixin
 from pet.models import Pet
@@ -22,7 +21,6 @@ class PetsittersListView(ListView):
         return queryset.filter(is_petsitter=True)
 
 
-@user_restricted_access   
 def user_profile(request, username):
     if request.user.username == username:
         user = get_object_or_404(User, username=username)
@@ -31,7 +29,6 @@ def user_profile(request, username):
     else:
         return HttpResponse("У вас нет доступа к профилю")
     
-@user_restricted_access  
 def ApplicationsListView(request, username):
     if request.user.username == username:
         if request.user.is_petsitter:

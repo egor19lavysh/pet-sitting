@@ -31,6 +31,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
+    'chat',
     'orders',
     'pet',
     'users',
@@ -73,6 +75,14 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'pets.wsgi.application'
+
+ASGI_APPLICATION = "pets.asgi.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    },
+}
 
 
 # Database
