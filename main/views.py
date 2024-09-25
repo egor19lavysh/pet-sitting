@@ -83,3 +83,10 @@ def reject_app_status(request, pk : int):
     else:
         return HttpResponse("Что-то пошло не так...")
     
+def petsitter_profile(request, id: int):
+    user = User.objects.get(id=id)
+    if user:
+        petsitter = Petsitter.objects.get(user=user)
+        return render(request, "main/petsitter_profile.html", {"user" : user, "petsitter" : petsitter})
+    else:
+        return HttpResponse("Пользователь не найден")
