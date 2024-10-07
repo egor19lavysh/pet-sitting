@@ -66,7 +66,7 @@
                           <div class="row">
                               <div class="col-lg-6">
                                   <div class="chat-about">
-                                      <h3 class="m-b-0">{{ room_name }}</h3>
+                                      <h3 class="m-b-0">{{ title }}</h3>
                                   </div>
                               </div>
                               <div class="col-lg-6 hidden-sm text-right">
@@ -99,6 +99,7 @@
       <script>
         var roomName = {{ room_name }};
         var username = {{ username }};
+        var username2 = {{ username2 }};
     
         var chatSocket = new ReconnectingWebSocket(
             'ws://' + window.location.host +
@@ -135,21 +136,22 @@
             chatSocket.send(JSON.stringify({
                 'command': 'new_message',
                 'message': message,
-                'from': username
+                'from': username,
+                'to': username2
             }));
     
             messageInputDom.value = '';
         };
     
         function fetchMessages() {
-          chatSocket.send(JSON.stringify({'command': 'fetch_messages' }));
+          chatSocket.send(JSON.stringify({'command': 'fetch_messages'}));
         }
 
     
         function createMessage(data) {
           var author = data['author'];
           var created = data['created']
-          var content = data['text']
+          var content = data['content']
           var msgListTag = document.createElement('li');
           var divTag = document.createElement('div');
           var divTag2 = document.createElement('div');

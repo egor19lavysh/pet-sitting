@@ -22,12 +22,12 @@ class PetsittersListView(ListView):
 
 
 def user_profile(request, username):
-    if request.user.username == username:
-        user = get_object_or_404(User, username=username)
-        pets = Pet.objects.filter(owner=user)
-        return render(request, "main/user_profile.html", {"user" : user, "pets" : pets})
-    else:
-        return HttpResponse("У вас нет доступа к профилю")
+    #if request.user.username == username:
+    user = get_object_or_404(User, username=username)
+    pets = Pet.objects.filter(owner=user)
+    return render(request, "main/user_profile.html", {"user" : user, "pets" : pets})
+    #else:
+    #    return HttpResponse("У вас нет доступа к профилю")
     
 def ApplicationsListView(request, username):
     if request.user.username == username:
