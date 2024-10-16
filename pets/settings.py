@@ -32,8 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'daphne',
-    'chat',
+    'check_system',
     'orders',
     'pet',
     'users',
@@ -77,16 +76,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'pets.wsgi.application'
 
-ASGI_APPLICATION = "pets.asgi.application"
+# ASGI_APPLICATION = "pets.asgi.application"
 
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [("127.0.0.1", 6379)],
-        },
-    },
-}
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts": [("127.0.0.1", 6379)],
+#         },
+#     },
+# }
 
 
 # Database

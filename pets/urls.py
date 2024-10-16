@@ -24,7 +24,7 @@ urlpatterns = [
     path('users/', include('users.urls')),
     path('pet/', include('pet.urls')),
     path('orders/', include('orders.urls')),
-    path('chatting/', include('chat.urls')),
+    path('system/', include('check_system.urls')),
     path('', include('main.urls')),
 ]
 
