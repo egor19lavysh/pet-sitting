@@ -29,6 +29,8 @@ class PetsitterCheck(models.Model):
         return f"Check system for {self.petsitter} by {self.owner}"
     
     def clean(self):
+        if self.start_date is None or self.end_date is None:
+            raise ValueError("Start date and end date must be set before performing this operation.")
         if self.end_date - self.start_date < datetime.timedelta(days=0) or self.start_date < datetime.datetime.now().date():
             raise ValidationError("Напрвильно выбраны даты")
         
@@ -42,7 +44,7 @@ class Report(models.Model):
 
     petsitter_check = models.ForeignKey(PetsitterCheck, on_delete=models.CASCADE)
     report_time = models.DateTimeField(auto_now_add=True)
-    report_type = models.CharField(max_length=10, choices=ReportTypes.TYPES)  
+    report_type = models.CharField(max_length=10, choices=ReportTypes.TYPES, default="Текст")  
     text = models.TextField(null=True, blank=True, verbose_name="Текст")
     image = models.ImageField(upload_to="check_photo/", verbose_name="Фотография", null=True, blank=True)
     video = models.FileField(upload_to="check_video/", verbose_name="Видео", null=True, blank=True)

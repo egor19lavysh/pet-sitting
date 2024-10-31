@@ -1,0 +1,13 @@
+<h1>Уведомления</h1>
+{% if ns %}
+{% for note in ns %}
+
+<p> <a href="{% url 'check_system:load_report' {{ note.system_id }} %}"> {{ note.message }} </a></p>
+
+{% endfor %}
+
+{% else %}
+
+<p> Уведомлений нет! </p>
+
+{% endif %}

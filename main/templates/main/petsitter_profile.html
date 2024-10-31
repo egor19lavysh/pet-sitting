@@ -14,8 +14,6 @@
     <p> {{ user.about }} </p>
     <h2> Опыт петситтера </h2>
     <p> {{ petsitter.experience }} лет</p>
-    <a href="{% url "chat:room" user.id %}"> Написать </a>
-    <br>
     <a href="{% url 'orders:create_order' user.id %}"> Создать заявку </a>
 
 </body>

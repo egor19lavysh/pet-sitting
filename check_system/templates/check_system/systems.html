@@ -1,0 +1,13 @@
+<h1>Все ваши системы проверки</h1>
+{% if systems %}
+{% for system in systems %}
+
+<p> <a href="{% url 'check_system:activate' system.id %}"> {{ system }} - {{system.status}} </a></p>
+
+{% endfor %}
+
+{% else %}
+
+<p> Систем проверок нет! </p>
+
+{% endif %}
