@@ -25,6 +25,7 @@ urlpatterns = [
     path('pet/', include('pet.urls')),
     path('orders/', include('orders.urls')),
     path('system/', include('check_system.urls')),
+    path('notifications/', include('notifications.urls')),
     path('', include('main.urls')),
 ]
 

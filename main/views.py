@@ -8,6 +8,7 @@ from django.db.models import Q
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .mixins import OrderOwnerPetsitterRequiredMixin
 from pet.models import Pet
+#from notifications.views import create_notification
 
 def index(request):
     return HttpResponse("The main page")
@@ -36,18 +37,18 @@ def ApplicationsListView(request, username):
 
             if filter_apps == "petsitter":
                 context = {
-                    "object_list" : Order.objects.filter(petsitter=request.user)
+                    "object_list" : Order.objects.filter(petsitter=request.user).order_by("-created_at")
                 }
-            elif filter_apps == "all":
+            elif filter_apps == "owner":
                 context = {
-                    "object_list" : Order.objects.filter(Q(petsitter=request.user) | Q(owner=request.user))
+                    "object_list" : Order.objects.filter(owner=request.user).order_by("-created_at")
                 }
             else:
                 context = {
-                    "object_list" : Order.objects.filter(owner=request.user)
+                    "object_list" : Order.objects.filter(Q(petsitter=request.user) | Q(owner=request.user)).order_by("-created_at")
                 }
             return render(request, "main/applications_list.html", context=context)
-        return render(request, "main/applications_list.html", context={"object_list" : Order.objects.filter(owner=request.user)})
+        return render(request, "main/applications_list.html", context={"object_list" : Order.objects.filter(Q(petsitter=request.user) | Q(owner=request.user)).order_by("-created_at")})
     else: 
         return HttpResponse("У вас нет доступа.")
 
@@ -77,7 +78,7 @@ def reject_app_status(request, pk : int):
         if request.user in [app.petsitter, app.owner]:
             app.status = "rejected"
             app.save()
-            return redirect("main:index")
+            return redirect("main:index")     
         else:
             return HttpResponse("У вас нет доступа к этому ресурсу.")
     else:

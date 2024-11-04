@@ -2,7 +2,11 @@
 {% if ns %}
 {% for note in ns %}
 
-<p> <a href="{% url 'check_system:load_report' {{ note.system_id }} %}"> {{ note.message }} </a></p>
+    {% if note.type == "report_load" %}
+        <a href="{% url "check_system:show_report" note.object_id %}"> {{ note.message }} </a>
+    {% else %}
+        <p> {{ note.message }} </p>
+    {% endif %}
 
 {% endfor %}
 

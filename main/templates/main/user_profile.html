@@ -15,7 +15,7 @@
     <p> {{ user.location }} </p>
     <p> {{ user.about }} </p>
     <a href="{% url "main:applications" user.username %}"> Заявки </a>
-
+    <a href="{% url "notifications:get_notifications"%}"> Уведомления </a>
     {% if pets %}
     <h3> Ваши питомцы </h3>
     {% for pet in pets %}
