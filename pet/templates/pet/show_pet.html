@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Страница Пэта</title>
+</head>
+<body>
+    <h1>Страница пэта</h2>
+    <h2> {{ object.name }} </h1>
+    {% if object.photo.url %}
+    <img src="{{ object.photo.url }}">
+    {% endif %}
+    <p> {{ object.age }} </p>
+    <p> {{ object.category }} </p>
+    <p> {{ object.breed }} </p>
+    <p> {{ object.certificate}} </p>
+    <p> {{ object.weight }} </p>
+    <p> {{ object.info }} </p>
+    <a href="{% url "pet:save_pet_id" object.id %}"> Найти петситтера для {{ object.name }} </a>
+
+    <a href="{% url "pet:update_pet" object.id %}"> Изменить </a>
+    <a href="{% url "pet:delete_pet" object.id %}"> Удалить </a>
+</body>
+</html>

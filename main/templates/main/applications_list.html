@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список Заявок</title>
+</head>
+<body>
+    <header>
+        <h1>Список заявок</h1>
+    </header>
+
+    <main>
+        {% if request.user.is_petsitter %}
+        <form method="get" action="{% url 'main:applications' request.user.username %}">
+            <label for="filter">Фильтр:</label>
+            <select name="filter">
+                <option value="all" {% if request.GET.filter == "all" %}selected{% endif %}>Все</option>
+                <option value="petsitter" {% if request.GET.filter == "petsitter" %}selected{% endif %}>Для петситтера</option>
+                <option value="owner" {% if request.GET.filter == "owner" %}selected{% endif %}>Для владельца</option>
+            </select>
+            <button type="submit">Применить фильтр</button>
+        </form>
+
+        <hr>
+        {% endif %}
+
+        <h2>Заявки</h2>
+        <ul>
+            {% for application in object_list %}
+                <li><a href="{% url "main:application_detail" request.user.username application.id %}">
+                    <strong>{{ application }}</strong><br>
+                    {{ application.status }}<br>
+                    <em>Создано: {{ application.created_at }}</em></a>
+                </li>
+            {% empty %}
+                <li>Нет доступных заявок.</li>
+            {% endfor %}
+        </ul>
+    </main>
+
+</body>
+</html>

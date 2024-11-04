@@ -1,0 +1,17 @@
+{% load static %}
+
+<h1> Отчет по заказу {{ report.petsitter_check }} </h1>
+
+<p> Видео: </p>
+<video width="530" height="440" controls autoplay>
+    <source src="{{ report.video.url }}" type="video/mp4"> </source>
+</video>
+
+<p> Фото: </p>
+<img src="{{ report.image.url }}" alt="image">
+
+<p> Комментарий: </p>
+<p> {{report.text}} </p>
+
+<p> Время создания: </p>
+<p> {{report.report_time}} </p>
