@@ -1,3 +1,4 @@
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from .forms import OrderForm
@@ -8,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .mixins import OrderOwnerRequiredMixin
 from pet.models import Pet
+from notifications.views import create_notification
 
 @login_required(login_url="/users/login/")
 def create_order(request, petsitter_id):
@@ -24,6 +26,11 @@ def create_order(request, petsitter_id):
 
             order.save()
 
+            create_notification(type="order_created", message=f"Создана заявка на передержку {order.category} {order.name}", 
+                                user_id=petsitter_id, object_id=order.id)
+            create_notification(type="order_created", message=f"Создана заявка на передержку {order.category} {order.name}", 
+                                user_id=order.owner.id, object_id=order.id)
+            
             if 'pet_id' in request.session:
                 del request.session['pet_id']
 
@@ -73,6 +80,14 @@ class UpdateOrderView(LoginRequiredMixin, OrderOwnerRequiredMixin, UpdateView):
     template_name_suffix = "_update_form"
     success_url = reverse_lazy("main:index")
     login_url = "users:login"
+
+    def form_valid(self, form):
+        self.object = form.save()
+        create_notification(type="order_status", message=f"Заявка на передержку {self.object.category} {self.object.name} изменена", 
+                                user_id=self.object.petsitter.id, object_id=self.object.id)
+        create_notification(type="order_status", message=f"Заявка на передержку {self.object.category} {self.object.name} изменена", 
+                                user_id=self.object.owner.id, object_id=self.object.id)
+        return HttpResponseRedirect(self.get_success_url())
 
 class DeleteOrderView(LoginRequiredMixin, OrderOwnerRequiredMixin, DeleteView):
     model = Order 

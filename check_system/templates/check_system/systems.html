@@ -2,7 +2,7 @@
 {% if systems %}
 {% for system in systems %}
 
-<p> <a href="{% url 'check_system:activate' system.id %}"> {{ system }} - {{system.status}} </a></p>
+<p> <a href="{% url 'check_system:show' system.id %}"> {{ system }} </a></p>
 
 {% endfor %}
 

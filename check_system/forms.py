@@ -13,4 +13,4 @@ class PetsitterCheckForm(forms.ModelForm):
 class ReportForm(forms.ModelForm):
     class Meta:
         model=Report
-        exclude=["petsitter_check"]
+        exclude=["petsitter_check", "analysis"]

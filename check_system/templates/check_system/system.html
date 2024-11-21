@@ -1,0 +1,18 @@
+<h1> Система проверки </h1>
+
+<h2>{{ system }}</h2>
+
+<p>Владелец животного: {{ system.owner }} </p>
+<p>Ситтер: {{ system.petsitter }} </p>
+<p> Дата начала: {{ system.start_date }} </p>
+<p> Дата конца: {{ system.end_date }} </p>
+<p> Время начала напоминаний: {{ system.start_time }} </p>
+<p> Частота напоминаний: {{ system.frequency }} </p>
+
+<a href="{% url "main:application_detail" request.user.username system.order.id %}"> {{ system.order }} </a>
+
+{% if system.petsitter == request.user %}
+
+<a href="{% url "check_system:load_report" system.id %}"> Загрузить отчет </a>
+
+{% endif %}

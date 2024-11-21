@@ -1,0 +1,10 @@
+{% if reports %}
+    {% for report in reports %}
+        <p><a href="{% url "check_system:show_report" report.id %}"> {{ report }} </a></p>
+    {% endfor %}
+
+{% else %}
+
+<h1> Отчетов еще нет </h1>
+
+{% endif %}

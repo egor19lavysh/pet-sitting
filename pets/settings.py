@@ -32,8 +32,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'celery',
-    'django_celery_beat',
     'django_celery_results',
     'check_system',
     'orders',
@@ -79,17 +77,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'pets.wsgi.application'
-
-# ASGI_APPLICATION = "pets.asgi.application"
-
-# CHANNEL_LAYERS = {
-#     "default": {
-#         "BACKEND": "channels_redis.core.RedisChannelLayer",
-#         "CONFIG": {
-#             "hosts": [("127.0.0.1", 6379)],
-#         },
-#     },
-# }
 
 
 # Database
@@ -155,24 +142,23 @@ AUTH_USER_MODEL = 'users.User'
 PHONENUMBER_DEFAULT_REGION = 'RU'
 
 # CELERY
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+
 CELERY_TIMEZONE = 'Europe/Moscow'
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_TRACK_STARTED = True
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
-
 CELERY_RESULT_BACKEND = 'django-db'
+CELERY_CACHE_BACKEND = 'django-cache'
 
-# django setting.
 CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-        'LOCATION': 'redis://localhost:6379/1',
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
     }
 }
 
 CELERY_CACHE_BACKEND = 'default'
 
-CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+# API KEYS
+
+GIGA_API_KEY = "NmRhNDRmOWItNGJjZC00YjQ2LWJmYjQtOWI0Mzc4ODUxMGY5OmU2NjA1NmE1LTM4YmEtNDc4ZC1hYTgzLTc2NWI5YWI0ODliZA=="

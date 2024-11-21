@@ -8,7 +8,7 @@ from django.db.models import Q
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .mixins import OrderOwnerPetsitterRequiredMixin
 from pet.models import Pet
-#from notifications.views import create_notification
+from notifications.views import create_notification
 
 def index(request):
     return HttpResponse("The main page")
@@ -65,6 +65,10 @@ def accept_app_status(request, pk : int):
         if request.user in [app.petsitter, app.owner]:
             app.status = "accepted"
             app.save()
+            create_notification(type="order_status", 
+                                message="Вашу заявку на передержку одобрили!",
+                                user_id=app.owner.id,
+                                object_id=app.id)
             return redirect("main:index")
         else:
             return HttpResponse("У вас нет доступа к этому ресурсу.")
@@ -78,6 +82,10 @@ def reject_app_status(request, pk : int):
         if request.user in [app.petsitter, app.owner]:
             app.status = "rejected"
             app.save()
+            create_notification(type="order_status", 
+                                message="Вашу заявку на передержку отклонили...",
+                                user_id=app.owner.id,
+                                object_id=app.id)
             return redirect("main:index")     
         else:
             return HttpResponse("У вас нет доступа к этому ресурсу.")

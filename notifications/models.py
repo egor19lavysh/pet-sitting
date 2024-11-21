@@ -8,13 +8,14 @@ class Notification(models.Model):
             ("report_load", "report_load"),
             ("report_watch", "report_watch"),
             ("order_created", "order_created"),
-            ("order_status", "order_status")
+            ("order_status", "order_status"),
+            ("other", "other")
         )
 
     is_read = models.BooleanField(default=False)
     type = models.CharField(max_length=255, choices=Types)
     message = models.TextField()
-    object_id = models.IntegerField(default=-1)
+    object_id = models.IntegerField(default=-1, blank=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 

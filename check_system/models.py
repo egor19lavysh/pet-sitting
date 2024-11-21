@@ -32,6 +32,7 @@ class Report(models.Model):
     text = models.TextField(verbose_name="Текст")
     image = models.ImageField(upload_to="check_photo/", verbose_name="Фотография")
     video = models.FileField(upload_to="check_video/", verbose_name="Видео")
+    analysis = models.TextField(verbose_name="Анализ", default="Почему-то нейросеть не смогла обработать изображение ситтера...")
     
 
     def __str__(self):

@@ -34,6 +34,9 @@
 <a href="{% url "main:reject_application" object.id %}"> Отклонить </a>
 {% endif %}
 
+{% if object.status == "accepted" and request.user == object.owner %}
+<a href="{% url "check_system:activate" object.id %}"> Активировать систему проверку </a>
+{% endif %}
 
 
 

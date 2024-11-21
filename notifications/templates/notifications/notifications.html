@@ -2,10 +2,15 @@
 {% if ns %}
 {% for note in ns %}
 
-    {% if note.type == "report_load" %}
-        <a href="{% url "check_system:show_report" note.object_id %}"> {{ note.message }} </a>
+    {% if note.type == "report_watch" %}
+        <a href="{% url "check_system:show_report" note.object_id %}"> {{ note.message }} </a> <br>
+
+    {% elif note.type == "report_load" %}
+        <a href="{% url "check_system:load_report" note.object_id %}"> {{ note.message }} </a> <br>
+    {% elif note.type == "order_created" or note.type == "order_status" %}
+        <a href="{% url "main:application_detail" request.user note.object_id %}"> {{ note.message }} </a> <br>
     {% else %}
-        <p> {{ note.message }} </p>
+        <p> {{ note.message }} </p> <br>
     {% endif %}
 
 {% endfor %}
