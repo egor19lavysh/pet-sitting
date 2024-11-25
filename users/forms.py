@@ -1,5 +1,5 @@
 from django import forms
-from .models import User, Petsitter
+from .models import User, Petsitter, City
 from phonenumber_field.modelfields import PhoneNumberField
 
 class RegisterUserForm(forms.ModelForm):
@@ -9,7 +9,7 @@ class RegisterUserForm(forms.ModelForm):
 
     class Meta:
         model=User
-        fields=["username", "first_name", "last_name", "email", "photo", "phone", "birth_date", "about", "location", "password",]
+        fields=["username", "first_name", "last_name", "email", "photo", "phone", "birth_date", "about", "password", "city"]
         labels = {
             "username" : "login"
         }

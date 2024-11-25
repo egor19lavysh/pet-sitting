@@ -1,11 +1,17 @@
-<h1>Petsitters</h1>
+<h1> Петситтеры </h1>
+
+<h3>Фильтры:</h3>
+<form method="get">
+    {{ filter.form.as_p }}
+    <button type="submit">Фильтровать</button>
+</form>
+
+<hr>
+
 <ul>
-{% for petsitter in object_list %}
-    <a href="{% url 'main:petsitter_profile' petsitter.id %}">
-        <li><h3>{{ petsitter.first_name}} {{petsitter.last_name }}</h3></li>
-    <p>{{ petsitter.location }}</p>
-    </a>
-{% empty %}
-    <li>No petsitters yet.</li>
-{% endfor %}
+    {% for petsitter in filter.qs %}
+        <li><a href="{% url 'main:petsitter_profile' petsitter.user.id %}">{{ petsitter.user.username }}</a></li>
+    {% empty %}
+        <li>Петситтеры не найдены.</li>
+    {% endfor %}
 </ul>

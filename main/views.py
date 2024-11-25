@@ -1,25 +1,32 @@
+from typing import Any
+from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404, redirect, render
 from django.http import HttpResponse
-from users.models import User, Petsitter
+from users.models import User, Petsitter, City
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from orders.models import Order
 from django.db.models import Q
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .mixins import OrderOwnerPetsitterRequiredMixin
-from pet.models import Pet
+from pet.models import Pet, Category
 from notifications.views import create_notification
+from .filters import PetsitterFilter
 
 def index(request):
     return HttpResponse("The main page")
 
-class PetsittersListView(ListView):
-    model=User
-    template_name="main/petsitters_list.html"
+def petsitter_list(request):
+    filter = PetsitterFilter(request.GET, queryset=Petsitter.objects.all())
+    return render(request, 'main/petsitters_list.html', {'filter': filter})
 
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset.filter(is_petsitter=True)
+class PetsittersListView(ListView):
+    model=Petsitter
+    template_name="main/petsitters_list.html"
+    queryset = Petsitter.objects.all()
+
+    
+    
 
 
 def user_profile(request, username):

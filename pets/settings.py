@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'django_celery_results',
+    'django_filters',
     'check_system',
     'orders',
     'pet',
