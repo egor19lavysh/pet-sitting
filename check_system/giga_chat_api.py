@@ -9,6 +9,8 @@ from pets.settings import GIGA_API_KEY
 
 def prompt(report_img):
 
+    print(GIGA_API_KEY)
+
     giga = GigaChat(credentials=GIGA_API_KEY,
                     scope="GIGACHAT_API_PERS",
                     model="GigaChat-Pro-preview",

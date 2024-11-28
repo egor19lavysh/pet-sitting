@@ -1,0 +1,241 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="{% static "main/css/style.css" %}">
+    <title>Lappy</title>
+</head>
+<body>
+    <header class="header">
+        <div class="top">
+            <div class="conteiner">
+
+                <div class="burger"></div>
+
+                    <ul class="nav_bar">
+                        <li class="nav_bar_item"><a href="index.html" class="link_on_page"><img src="assets/imgs/logo.svg" class="logo_h" alt=""></a></li>
+                        <li class="nav_bar_item"><a href="#" class="link_on_page">Выбрать ситтера</a></li>
+                        <li class="nav_bar_item"><a href="#" class="link_on_page">Добавить питомца</a></li>
+                        <li class="nav_bar_item"><a href="#" class="link_on_page">Стать ситтером</a></li>
+                        <li class="nav_bar_item"><a href="#" class="link_on_page">О нас</a></li>
+                        <li class="nav_bar_item"><a href="#" class="link_on_page">FAQ</a></li>
+                        <li><a href="account.html"><p class="text_btn">Личный кабинет</p></a></li>
+                    </ul>
+            </div>
+        </div>
+        <div class="header_content">
+            <div class="conteiner">
+                <div class="main_block">
+                    <div class="left_block">
+                        <h1 class="logo">Lappy</h1>
+                        <p class="motto">Любовь и забота для ваших<br> питомцев — пока вы вдали!</p>
+                        <a href="#"><p class="text_btn_org">Добавить питомца</p></a>
+                        <a href="#"><p class="text_btn_perp">Стать петситтером</p></a>
+                    </div>
+                    <div class="right_block">
+                        <div class="main_inputs">
+                            <input type="text" class="chose_pet" placeholder="Добавить питомца">
+                            <input type="text" class="search_city" placeholder="Город, в котором нужно оставить питомца">
+                        </div>
+                        <p class="weight">Примерный вес питомца</p>
+                        <ul class="list_weight">
+                            <li class="type_weight">До 5 кг</li>
+                            <li class="type_weight m">До 15 кг</li>
+                            <li class="type_weight">Больше 15 кг</li>
+                        </ul>
+                        <p class="dates">Даты:</p>
+                        <div class="dates_chose">
+                            <input type="date" class="from" value="2005-03-30">
+                            <input type="date" class="to" value="2005-03-30">
+                        </div>
+                        <a href="#"><p class="text_btn_org">Найти ситтера</p></a>
+                        <p class="term">* ситтером мы называем человека, который присмотрит за вашим питомцем на время вашего отъезда</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main>
+        <div class="conteiner">
+            <h1 class="title_garant">Что мы <span class="color mr"> гарантируем?</span></h1>
+            <div class="cards">
+                <div class="card_or">
+                    <img src="{% static "main/imgs/cardslappy/карточка 1.png" %}" alt="" class="img_card">
+                </div>
+                <div class="card">
+                    <img src="{% static "main/imgs/cardslappy/карточка 2.png" %}" alt="" class="img_card">
+                </div>
+                <div class="card_or">
+                    <img src="{% static "main/imgs/cardslappy/карточка 3.png" %}" alt="" class="img_card">
+                </div>
+                <div class="card">
+                    <img src="{% static "main/imgs/cardslappy/карточка 4.png" %}" alt="" class="img_card">
+                </div>
+                <div class="card_or">
+                    <img src="{% static "main/imgs/cardslappy/карточка 5.png" %}" alt="" class="img_card">
+                </div>
+                <div class="card">
+                    <img src="{% static "main/imgs/cardslappy/карточка 6 (1).png" %}" alt="" class="img_card">
+
+                </div>
+            </div>
+            <div class="btn_take_petts">
+                <a href="#"><p class="bord">Стать петситтером</p></a>
+            </div>
+        </div>
+
+
+
+
+
+
+
+        <div class="proces">
+            <div class="conteiner">
+                <h1 class="title_prev_proces">Как проходит  петситтинг/<br>домашняя передержка животных?</h1>
+                <div class="step_process">
+                    <div class="steps">
+                        <div class="colomn">
+                            <div class="txt_proces">
+                                <p class="digit">1</p>
+                                <p class="txt_content">Знакомство онлайн в чате или через звонок</p>
+                            </div>
+                            <div class="txt_proces">
+                                <p class="digit">2</p>
+                                <p class="txt_content">Передача питомца (или вы привозите питомца, или петситтер его заберёт)</p>
+                            </div>
+                            <div class="txt_proces">
+                                <p class="digit">3</p>
+                                <p class="txt_content">Знакомство онлайн в чате или через звонок</p>
+                            </div>
+                        </div>
+                        <div class="colomn">
+                            <div class="txt_proces">
+                                <p class="digit">4</p>
+                                <p class="txt_content">Передача питомца (или вы привозите питомца, или петситтер его заберёт)</p>
+                            </div>
+                            <div class="txt_proces">
+                                <p class="digit">5</p>
+                                <p class="txt_content">Знакомство онлайн в чате или через звонок</p>
+                            </div>
+                            <div class="txt_proces cntr">
+                                <a href="#"><p class="proces_btn">Найти петситтера</p></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+        
+        <div class="conteiner">
+            <h1 class="title_prove_pep">Наши петситтеры - <span class="color">проверенные люди</span></h1>
+            <div class="facts">
+                <div class="test">
+                    <img src="{% static "main/imgs/To Do List 3D Icon Model For UI 1.png" %}" alt="" class="img_to_do">
+                    <p class="txt_facts">Каждый петситтер проходит тест на знание ухода за питомцами.</p>
+                </div>
+                <div class="test">
+                    <img src="{% static "main/imgs/Note Apps 3D Icon Model For UI 1.png" %}" alt="" class="img_to_do">
+                    <p class="txt_facts">Наши ситтеры обучены на лекциях от опытных кинологов, что гарантирует профессионализм</p>
+                </div>
+                <div class="test">
+                    <img src="{% static "main/imgs/Folder 3D Icon Model For UI 1.png" %}" alt="" class="img_to_do">
+                    <p class="txt_facts">Мы проверяем документы и социальные сети ситтеров, заключаем договор для вашей безопасности.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="revu">
+            <div class="conteiner">
+                <h1 class="title_revu">Отзывы:</h1>
+                <div class="swiper mySwiper">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <div class="revu_inf">
+                                <div class="name_surname">
+                                    <img src="{% static "main/imgs/ebl.png" %}" alt="" class="face">
+                                    <p class="name_and_surname">Имя Фамилия</p>
+                                </div>
+                                <p class="sam_revu">Присмотрели за животинкой на 5/5Присмотрели за животинкой на 5/5Присмотрели за животинкой на 5/5Присмотрели за животинкой на 5/5Присмотрели за животинкой на 5/5 Присмотрели за животинкой на 5/5 Присмотрели за животинкой на 5/5</p>
+                            </div>
+                        </div>
+                      <div class="swiper-slide">
+                        <div class="revu_inf">
+                            <div class="name_surname">
+                                <img src="{% static "main/imgs/ebl.png" %}" alt="" class="face">
+                                <p class="name_and_surname">Имя Фамилия</p>
+                            </div>
+                            <p class="sam_revu">Присмотрели за животинкой на 5/5Присмотрели за животинкой на 5/5Присмотрели за животинкой на 5/5Присмотрели за животинкой на 5/5Присмотрели за животинкой на 5/5 Присмотрели за животинкой на 5/5 Присмотрели за животинкой на 5/5</p>
+                        </div>
+                      </div>
+                      <div class="swiper-slide">
+                        <div class="revu_inf">
+                            <div class="name_surname">
+                                <img src="{% static "main/imgs/ebl.png" %}" alt="" class="face">
+                                <p class="name_and_surname">Имя Фамилия</p>
+                            </div>
+                            <p class="sam_revu">Присмотрели за животинкой на 5/5Присмотрели за животинкой на 5/5Присмотрели за животинкой на 5/5Присмотрели за животинкой на 5/5Присмотрели за животинкой на 5/5 Присмотрели за животинкой на 5/5 Присмотрели за животинкой на 5/5</p>
+                        </div>
+                      </div>
+                      <div class="swiper-slide">
+                        <div class="revu_inf">
+                            <div class="name_surname">
+                                <img src="{% static "main/imgs/ebl.png" %}" alt="" class="face">
+                                <p class="name_and_surname">Имя Фамилия</p>
+                            </div>
+                            <p class="sam_revu">Присмотрели за животинкой на 5/5Присмотрели за животинкой на 5/5Присмотрели за животинкой на 5/5Присмотрели за животинкой на 5/5Присмотрели за животинкой на 5/5 Присмотрели за животинкой на 5/5 Присмотрели за животинкой на 5/5</p>
+                        </div>
+                      </div>
+                      <div class="swiper-slide">
+                        <div class="revu_inf">
+                            <div class="name_surname">
+                                <img src="{% static "main/imgs/ebl.png" %}" alt="" class="face">
+                                <p class="name_and_surname">Имя Фамилия</p>
+                            </div>
+                            <p class="sam_revu">Присмотрели за животинкой на 5/5Присмотрели за животинкой на 5/5Присмотрели за животинкой на 5/5Присмотрели за животинкой на 5/5Присмотрели за животинкой на 5/5 Присмотрели за животинкой на 5/5 Присмотрели за животинкой на 5/5</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="swiper-pagination"></div>
+                </div>
+                <div class="arrow_btn">
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-button-next"></div>
+                </div>
+            </div>
+        </div>
+        <div class="conteiner">
+            <h1 class="title_q_a"><span class="color">Вопрос - ответ:</span></h1>
+            <div class="tabs">
+                <p class="title_tabs">Какие правила для хозяина питомца и для ситтера?</p>
+                <p class="plus" data-target="table1">+</p>
+            </div>
+            <p class="txt_tab" id="table1">Lorem ipsum dolor sit amet consectetur adipisicing elit. Corrupti, nihil. Obcaecati cum ut aspernatur rem odio, doloribus totam esse ab distinctio! Sed praesentium vel atque tempora rerum amet excepturi. Illo. Lorem ipsum dolor sit amet consectetur, adipisicing elit. Hic, dicta tempora, accusantium blanditiis iure cupiditate odit fuga exercitationem cumque laborum quas. Voluptatum suscipit impedit excepturi voluptate commodi fugiat, obcaecati expedita?</p>
+            <div class="tabs">
+                <p class="title_tabs">Какие правила для хозяина питомца и для ситтера?</p>
+                <p class="plus" data-target="table2">+</p>
+            </div>
+            <p class="txt_tab" id="table2">Lorem ipsum dolor sit amet consectetur adipisicing elit. Corrupti, nihil. Obcaecati cum ut aspernatur rem odio, doloribus totam esse ab distinctio! Sed praesentium vel atque tempora rerum amet excepturi. Illo. Lorem ipsum dolor sit amet consectetur, adipisicing elit. Hic, dicta tempora, accusantium blanditiis iure cupiditate odit fuga exercitationem cumque laborum quas. Voluptatum suscipit impedit excepturi voluptate commodi fugiat, obcaecati expedita?</p>
+            <div class="tabs">
+                <p class="title_tabs">Какие правила для хозяина питомца и для ситтера?</p>
+                <p class="plus" data-target="table3">+</p>
+            </div>
+            <p class="txt_tab" id="table3">Lorem ipsum dolor sit amet consectetur adipisicing elit. Corrupti, nihil. Obcaecati cum ut aspernatur rem odio, doloribus totam esse ab distinctio! Sed praesentium vel atque tempora rerum amet excepturi. Illo. Lorem ipsum dolor sit amet consectetur, adipisicing elit. Hic, dicta tempora, accusantium blanditiis iure cupiditate odit fuga exercitationem cumque laborum quas. Voluptatum suscipit impedit excepturi voluptate commodi fugiat, obcaecati expedita?</p>
+        </div>
+    </main>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="{% static "main/js/main.js" %}"></script>
+</body>
+</html>

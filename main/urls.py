@@ -6,7 +6,6 @@ app_name = "main"
 urlpatterns = [
     path("", views.index, name="index"),
     path("petsitters/", views.petsitter_list, name="show_petsitters"),
-    # path("petsitters/filter/", views.FilterPetsittersView.as_view(), name="filter_petsitters"),
     path("petsitters/<int:id>", views.petsitter_profile, name="petsitter_profile"),
     path("<str:username>/", views.user_profile, name="user_profile"),
     path("<str:username>/applications/", views.ApplicationsListView, name="applications"),

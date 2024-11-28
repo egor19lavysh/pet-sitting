@@ -12,33 +12,43 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+import environ
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
+
+
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-
+SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
 INSTALLED_APPS = [
-    'django_celery_results',
     'django_filters',
+    'django_apscheduler',
     'check_system',
     'orders',
     'pet',
     'users',
     'notifications',
     'main',
+    'rating',
     'phonenumber_field',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -143,19 +153,20 @@ PHONENUMBER_DEFAULT_REGION = 'RU'
 
 # CELERY
 
-CELERY_TIMEZONE = 'Europe/Moscow'
-CELERY_TASK_TRACK_STARTED = True
-CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
-CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
-CELERY_RESULT_BACKEND = 'django-db'
-CELERY_CACHE_BACKEND = 'django-cache'
+# CELERY_TIMEZONE = 'Europe/Moscow'
+# CELERY_TASK_TRACK_STARTED = True
+# CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
+# CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+# CELERY_RESULT_BACKEND = 'django-db'
+# CELERY_CACHE_BACKEND = 'django-cache'
 
-CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
-    }
-}
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django.core.cache.backends.redis.RedisCache",
+#         "LOCATION": "redis://127.0.0.1:6379/1",
+#     }
+# }
 
-CELERY_CACHE_BACKEND = 'default'
+# CELERY_CACHE_BACKEND = 'default'
 
+GIGA_API_KEY = env('GIGA_API_KEY')

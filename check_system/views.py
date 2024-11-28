@@ -11,9 +11,14 @@ from django.contrib.auth import get_user_model
 from notifications.views import create_notification
 from .giga_chat_api import prompt
 from notifications.views import create_notification
-
+from apscheduler.schedulers.background import BackgroundScheduler
+from django_apscheduler.jobstores import DjangoJobStore, register_events, register_job
 
 User = get_user_model()
+
+scheduler = BackgroundScheduler()
+scheduler.add_jobstore(DjangoJobStore(), 'default')
+
 
 def schedule_report_requests(report_check: PetsitterCheck):
    
@@ -34,16 +39,20 @@ def schedule_report_requests(report_check: PetsitterCheck):
             if task_time > today:
                 if 5 < task_time.hour < 22:
                     time_list.append(task_time)
-                    report_request.apply_async((report_check.petsitter.id, report_check.id), eta=task_time)
+                    #report_request.apply_async((report_check.petsitter.id, report_check.id), eta=task_time)
+                    scheduler.add_job(report_request, 'date', run_date=task_time, args=[report_check.petsitter.id, report_check.id])
+
             elif task_time == today:
                 if task_time.hour > today.hour:
                     if 5 < task_time.hour < 22:
                         time_list.append(task_time)
-                        report_request.apply_async((report_check.petsitter.id, report_check.id), eta=task_time)
+                        #report_request.apply_async((report_check.petsitter.id, report_check.id), eta=task_time)
+                        scheduler.add_job(report_request, 'date', run_date=task_time, args=[report_check.petsitter.id, report_check.id])
                         
     print(time_list)
     
-
+register_events(scheduler)
+scheduler.start()
 
 def show_all(request):
     user = get_object_or_404(User, id=request.user.id)
@@ -75,7 +84,7 @@ def show_report(request, report_id):
 
 def activate(request, pk: int):
     order = get_object_or_404(Order, id=pk)
-    if request.user in [order.petsitter, order.owner]:
+    if request.user == order.owner:
         if request.method == "POST":
             form = PetsitterCheckForm(request.POST)
             if form.is_valid():
@@ -110,7 +119,7 @@ def stop(request, pk: int):
 
 def load_report(request, pk: int):
     system = get_object_or_404(PetsitterCheck, id=pk)
-    if request.user in [system.petsitter, system.owner]:
+    if request.user == system.petsitter:
         if request.method == "POST":
             form = ReportForm(request.POST, request.FILES)
             if form.is_valid():

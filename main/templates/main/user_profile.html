@@ -1,30 +1,115 @@
+{% load static %}
+
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Личный кабинет</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="{% static "main/css/style.css" %}">
+    <title>Lappy</title>
 </head>
 <body>
-    <h1>{{ user.username }}</h1>
-    {% if user.photo.url != None %}
-    <img src="{{ user.photo.url }}">
-    {% endif %}
-    <p> {{ user.first_name}} {{ user.last_name }}</p>
-    <p> Дата рождения: {{ user.birth_date }} </p>
-    <p> {{ user.first_name}} </p>
-    <p> {{ user.location }} </p>
-    <p> {{ user.about }} </p>
-    <a href="{% url "main:applications" user.username %}"> Заявки </a>
-    <a href="{% url "notifications:get_notifications"%}"> Уведомления </a>
-    {% if pets %}
-    <h3> Ваши питомцы </h3>
-    {% for pet in pets %}
-    <a href="{% url "pet:read_pet" pet.id %}"> {{pet.name}} - {{ pet.category }} {{ pet.breed }} </a>
-    {% endfor %}
-    {% else %}
-    <h3> У вас пока нет питомцев, но вы можете их <a href="{% url "pet:create_pet" %}">добавить </a> </h3>
-    {% endif %}
+    <header class="header">
+        <div class="top">
+            <div class="conteiner">
 
+                <div class="burger"></div>
 
+                    <ul class="nav_bar">
+                        <li class="nav_bar_item"><a href="index.html" class="link_on_page"><img src="assets/imgs/logo.svg" class="logo_h" alt=""></a></li>
+                        <li class="nav_bar_item"><a href="#" class="link_on_page">Выбрать ситтера</a></li>
+                        <li class="nav_bar_item"><a href="#" class="link_on_page">Добавить питомца</a></li>
+                        <li class="nav_bar_item"><a href="#" class="link_on_page">Стать ситтером</a></li>
+                        <li class="nav_bar_item"><a href="#" class="link_on_page">О нас</a></li>
+                        <li class="nav_bar_item"><a href="#" class="link_on_page">FAQ</a></li>
+                        <li><a href="#"><p class="text_btn">Личный кабинет</p></a></li>
+                    </ul>
+            </div>
+        </div>
+    </header>
+    <main>
+        <div class="conteiner">
+            <div class="flex_block">
+                <div class="l_block">
+                    {% if user.photo.url != None %}
+                    <img class="ava" src="{{user.photo.url}}" alt="">
+                    {% else %}
+                    <img class="ava" src="media/users/default.jpg" alt="">
+                    {% endif %}
+                    <p class="name">{{ user.first_name }}</p>
+                    <p class="surname">{{ user.last_name }}</p>
+                    <ul class="reiting">
+                        <li class="stars"><img src="{% static "main/imgs/Star 4.png" %}" class="stars_img" alt=""></li>
+                        <li class="stars"><img src="{% static "main/imgs/Star 4.png" %}" class="stars_img" alt=""></li>
+                        <li class="stars"><img src="{% static "main/imgs/Star 4.png" %}" class="stars_img" alt=""></li>
+                        <li class="stars"><img src="{% static "main/imgs/Star 4.png" %}" class="stars_img" alt=""></li>
+                        <li class="stars"><img src="{% static "main/imgs/Star 5.png" %}" class="stars_img" alt=""></li>
+                    </ul>
+                    <p class="data">{{ user.birth_date }}</p>
+                    <div class="location">
+                        <img src="{% static "main/imgs/mdi_location.png" %}" class="mapa" alt="">
+                        <p class="posit">{{ user.city }}</p>
+                    </div>
+                    <div class="line"></div>
+                    <ul class="menu">
+                        <li class="m_item"><a href="" class="link_m">Заказы</a></li>
+                        <li class="m_item"><a href="" class="link_m">Мои отзывы</a></li>
+                        <li class="m_item"><a href="" class="link_m">Избранное</a></li>
+                        <div class="line"></div>
+                        <li class="m_item"><a href="" class="link_m">Новости</a></li>
+                        <li class="m_item"><a href="" class="link_m">Сообщения</a></li>
+                        <div class="line"></div>
+                        <li class="m_item"><a href="" class="link_m">Продвижение</a></li>
+                        <div class="line"></div>
+                        <li class="m_item"><a href="" class="link_m">Изменить профиль</a></li>
+                        <div class="line"></div>
+                    </ul>
+                    </div>
+                    <div class="r_block">
+                        {% if petsitter %}
+                            <div class="inf_exepr">
+                                <p class="min_title_exp">Мой опыт:</p>
+                                <p class="exp_cont">{{petsitter.experience}}</p>
+                                <p class="min_title_exp">С какими животными работаю</p>
+                                <ul class="list_pets">
+                                    {% for category in petsitter.categories.all %}
+                                    {% csrf_token %}
+                                    <li class="pet_item">{{category.name}}</li>
+                                    {% endfor %}
+                                </ul>
+                        {% endif %}
+                            <p class="min_title_exp">О себе:</p>
+                            <p class="exp_cont">{{user.about}}</p>
+                            <p class="min_title_exp">Мои питомцы:</p>
+                            {% for pet in pets %}
+                                <div class="pet">
+                                    {% if pet.photo.url != None %}
+                                        <img src="{{pet.photo.url}}" alt="">
+                                    {% endif %}
+                                    <div class="name_age_bt">
+                                        <p class="name_pet_age_pet">{{pet.name}}, {{pet.age}} лет</p>
+                                        <a href="" class=""><p class="txt_link_btn_gr black">Подробнее</p></a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+
+                            <p class="min_title_exp">Отзывы:</p>
+                            <div class="rev">
+                                <img src="{% static "main/imgs/family.svg" %}" alt="">
+                                <div class="rev_cont_ab">
+                                    <p class="name_rever">Егор Лавыш</p>
+                                    <p class="data_rev">02.10.2024</p>
+                                    <p class="main_rev">Оставил своего мопса на передержку Екатерине. Очень понравилось, ситтер всегда была на связи. но ставлю 4 звезды из-за того что сегодня дождь на улице</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </main>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="{% static "main/js/main.js" %}"></script>
 </body>
 </html>
