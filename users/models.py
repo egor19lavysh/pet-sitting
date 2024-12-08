@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from phonenumber_field.modelfields import PhoneNumberField
 from pet.models import Category
+from django.urls import reverse
 
 class Region(models.Model):
     name = models.CharField(max_length=255)
@@ -31,6 +32,9 @@ class User(AbstractUser):
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
     
+    def get_absolute_url(self):
+        return reverse("main:user_profile", kwargs={"username" : self.username})
+    
 
 class Petsitter(models.Model):
     CHOICES = (
@@ -47,6 +51,9 @@ class Petsitter(models.Model):
 
     def __str__(self):
         return f"Пэтситтер {self.user.first_name} {self.user.last_name}"
+    
+    def get_absolute_url(self):
+        return reverse("main:user_profile", kwargs={"username" : self.user.username})
 
 
 
