@@ -11,6 +11,15 @@ from django.contrib.auth import get_user_model
 from .models import Petsitter
 from django.contrib.auth.views import PasswordResetView
 from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib.auth import login, authenticate 
+from django.contrib.sites.shortcuts import get_current_site 
+from django.utils.encoding import force_bytes, force_str 
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode 
+from django.template.loader import render_to_string 
+from .tokens import account_activation_token 
+from django.core.mail import send_mail
+from pets.settings import EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
+
 
 
 User = get_user_model()
@@ -48,19 +57,42 @@ def register_user(request):
         if user_form.is_valid():
             user = user_form.save(commit=False)
             user.set_password(user_form.cleaned_data['password'])
+            user.is_active = False
             user.save()
 
-            messages.success(request, 'You have singed up successfully.')
-            login(request, user)
-            return HttpResponseRedirect(reverse("main:index"))
+            current_site = get_current_site(request) 
+            mail_subject = 'Ссылка для активации аккаунта' 
+            message = render_to_string('users/acc_active_email.html', { 
+                'user': user, 
+                'domain': current_site.domain, 
+                'uid': urlsafe_base64_encode(force_bytes(user.id)), 
+                'token': account_activation_token.make_token(user), 
+            }) 
+            to_email = user_form.cleaned_data.get('email') 
+
+            send_mail(mail_subject, message, EMAIL_HOST_USER,  [to_email]) 
+            return HttpResponse('Пожалуйста, подтвердите свой email для завершения регистрации!') 
 
         else:
-            # Вернуть оба формы, если есть ошибки
             return render(request, "users/registration_form.html", {'form': user_form})
 
     else:
         user_form = RegisterUserForm()
         return render(request, "users/registration_form.html", {'form': user_form})
+    
+def activate(request, uidb64, token): 
+    User = get_user_model() 
+    try: 
+        uid = force_str(urlsafe_base64_decode(uidb64)) 
+        user = User.objects.get(id=uid) 
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist): 
+        user = None 
+    if user is not None and account_activation_token.check_token(user, token): 
+        user.is_active = True 
+        user.save() 
+        return HttpResponse('Спасибо за подтверждение вашего email. Теперь вы можете зайти в свой аккаунт.') 
+    else: 
+        return HttpResponse('Неправильная активационная ссылка!') 
     
 
 class UserUpdate(UpdateView):
