@@ -26,6 +26,7 @@ urlpatterns = [
     path('orders/', include('orders.urls')),
     path('system/', include('check_system.urls')),
     path('notifications/', include('notifications.urls')),
+    path('rating/', include('rating.urls')),
     path('', include('main.urls')),
 ]
 

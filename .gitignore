@@ -1,2 +1,2 @@
 .env
-pets/settings.py
+db.sqlite3
