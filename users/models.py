@@ -28,6 +28,7 @@ class User(AbstractUser):
     is_petsitter = models.BooleanField(default=False)
     city = models.ForeignKey(City, on_delete=models.DO_NOTHING, null=True)
     region = models.ForeignKey(Region, on_delete=models.DO_NOTHING, null=True)
+    rating = models.FloatField(default=0.0)
     
     # from django.utils.traslation import gettext_lazy as _
     # email = models.EmailField(_("email address"), unique=True,)

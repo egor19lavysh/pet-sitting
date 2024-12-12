@@ -10,7 +10,7 @@ class RegisterUserForm(forms.ModelForm):
 
     class Meta:
         model=User
-        fields=["username", "first_name", "last_name", "email", "photo", "phone", "birth_date", "about", "password", "city"]
+        fields=["username", "first_name", "last_name", "email", "photo", "phone", "birth_date", "about", "city", "password"]
         labels = {
             "username" : "login"
         }

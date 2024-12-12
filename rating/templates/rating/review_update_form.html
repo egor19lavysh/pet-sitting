@@ -1,0 +1,20 @@
+<h1> Изменить отзыв </h1>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <h3>Изображения</h3>
+    {% for image in images %}
+        <div>
+            <input type="checkbox" name="{{ image }}">
+            <img src="{{ image.image.url }}" alt="Review Image" style="max-width: 200px; max-height: 200px;">
+        </div>
+    {% empty %}
+        <p>Нет загруженных изображений</p>
+    {% endfor %}
+    
+    <h3>Добавить новые изображения:</h3>
+    {{ review_image_form.as_p }}
+    
+    <button type="submit">Сохранить изменения</button>
+</form>
