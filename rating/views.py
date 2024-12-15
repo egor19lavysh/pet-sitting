@@ -1,10 +1,11 @@
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DeleteView
-from .models import Review, ReviewImage
-from .forms import ReviewForm, ReviewImageForm
+from .models import Review, ReviewImage, Reply
+from .forms import ReviewForm, ReviewImageForm, ReplyForm
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
+from django.http import HttpResponse
 
 
 User = get_user_model()
@@ -77,3 +78,63 @@ class ReviewDeleteView(DeleteView):
     success_url=reverse_lazy("main:index")
     template_name="rating/review_delete_form.html"
 
+class ReplyCreateView(CreateView):
+    model=Reply
+    form_class=ReplyForm
+    template_name="rating/reply_create_form.html"
+
+    def post(self, request, pk):
+
+        existing_reply = Reply.objects.filter(review__id=pk).first()
+        published_review = get_object_or_404(Review, id=pk)
+
+        if existing_reply :
+            return HttpResponse("Вы уже оставили ответ на этот отзыв.<br>Удалите либо измените существующий ответ.", status=400)
+
+        if not published_review.published:
+            return HttpResponse("Отзыв еще на модерации.", status=400)
+
+        form = self.get_form()
+
+        if form.is_valid():
+            reply = form.save(commit=False)
+            reply.review = get_object_or_404(Review, id=pk)
+            reply.save()
+
+            return redirect("main:user_profile", username=request.user.username)
+        else:
+            return self.form_invalid(form)
+
+    def dispatch(self, request, pk, *args, **kwargs):
+        review = get_object_or_404(Review, id=pk)
+        if request.user != review.user:
+            return HttpResponse("У вас нет права доступа.", status=400) 
+        return super().dispatch(request, pk, *args, **kwargs)
+
+class ReplyUpdateView(UpdateView):
+    model=Reply
+    fields=["text"]
+    template_name="rating/reply_update_form.html"
+    
+    def get_success_url(self):
+        return reverse_lazy("main:user_profile", kwargs={"username": self.request.user.username})
+
+    def dispatch(self, request, pk, *args, **kwargs):
+        reply = get_object_or_404(Reply, id=pk)
+        if request.user != reply.review.user:
+            return HttpResponse("У вас нет права доступа.", status=400) 
+        return super().dispatch(request, pk, *args, **kwargs)
+
+
+class ReplyDeleteView(DeleteView):
+    model=Reply
+    template_name="rating/reply_delete_form.html"
+    
+    def get_success_url(self):
+        return reverse_lazy("main:user_profile", kwargs={"username": self.request.user.username})
+
+    def dispatch(self, request, pk, *args, **kwargs):
+        reply = get_object_or_404(Reply, id=pk)
+        if request.user != reply.review.user:
+            return HttpResponse("У вас нет права доступа.", status=400) 
+        return super().dispatch(request, pk, *args, **kwargs)

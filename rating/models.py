@@ -17,6 +17,24 @@ class Review(models.Model):
     published = models.BooleanField(default=False)
     timestamp = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f"Отзыв на {self.user.username} от {self.reviewer.username} номер {self.id}"
+    
+
 class ReviewImage(models.Model):
     review = models.ForeignKey(Review, on_delete=models.CASCADE)
     image = models.ImageField(_("фотография к отзыву"), upload_to="image_review/", blank=True, null=True)
+
+    def __str__(self):
+        return f"Картинка к отзыву номер {self.review.id}"
+
+class Reply(models.Model):
+    review = models.ForeignKey(Review, on_delete=models.CASCADE)
+    text = models.TextField(_("Ответ на отзыв"))
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = "Replies"
+
+    def __str__(self):
+        return f"Ответ на отзыв от {self.review.user.username} номер {self.id}"

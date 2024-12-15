@@ -1,5 +1,5 @@
 from django import forms
-from .models import Review, ReviewImage
+from .models import Review, ReviewImage, Reply
 from django.core.exceptions import ValidationError
 
 
@@ -34,3 +34,9 @@ class MultipleFileField(forms.FileField):
 
 class ReviewImageForm(forms.Form):
     images = MultipleFileField(label='Select files', required=False)
+
+
+class ReplyForm(forms.ModelForm):
+    class Meta:
+        model=Reply
+        exclude=["timestamp", "review"]

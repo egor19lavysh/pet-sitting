@@ -1,0 +1,8 @@
+<h1> Изменить отзыв </h1>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+        
+    <button type="submit">Сохранить изменения</button>
+</form>
