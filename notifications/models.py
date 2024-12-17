@@ -9,6 +9,7 @@ class Notification(models.Model):
             ("report_watch", "report_watch"),
             ("order_created", "order_created"),
             ("order_status", "order_status"),
+            ("review", "review"),
             ("other", "other")
         )
 

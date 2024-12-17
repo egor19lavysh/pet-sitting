@@ -9,6 +9,8 @@
         <a href="{% url "check_system:load_report" note.object_id %}"> {{ note.message }} </a> <br>
     {% elif note.type == "order_created" or note.type == "order_status" %}
         <a href="{% url "main:application_detail" request.user note.object_id %}"> {{ note.message }} </a> <br>
+    {% elif note.type == "review" %}
+        <a href="{% url "main:user_profile" %}"> {{ note.message }} </a> <br>
     {% else %}
         <p> {{ note.message }} </p> <br>
     {% endif %}

@@ -8,7 +8,7 @@ class PetsitterCheckForm(forms.ModelForm):
 
     class Meta:
         model=PetsitterCheck
-        exclude=["petsitter", "owner", "order", "start_date", "end_date"]
+        exclude=["petsitter", "owner", "order", "start_date", "end_date", "rest", "status"]
 
 class ReportForm(forms.ModelForm):
     class Meta:

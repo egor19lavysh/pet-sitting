@@ -18,13 +18,19 @@ class Order(models.Model):
             (">20", "Тяжелый (больше 15 кг)")
         )
 
+    class HOME_CHOICES:
+        CHOICES = (
+            ("Передержка в доме у ситтера", "Передержка в доме у ситтера"),
+            ("Передержка у вас дома", "Передержка у вас дома")
+        )
+
     photo = models.ImageField(upload_to="pets/", blank=True)
     name = models.CharField(max_length=255)
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
     breed = models.ForeignKey(Breed, on_delete=models.PROTECT)
 
-    need_walking = models.BooleanField(default=False)
-    need_sitting = models.BooleanField(default=True)
+    walking = models.PositiveIntegerField(default=3)
+    place = models.CharField(max_length=255, choices=HOME_CHOICES.CHOICES, default="Передержка в доме у ситтера")
 
     first_day = models.DateField()
     last_day = models.DateField()

@@ -7,6 +7,12 @@ from orders.models import Order
 User = get_user_model()
 
 class PetsitterCheck(models.Model):
+    STATUSES = [
+        ("IN PROCESS", "IN PROCESS"),
+        ("SUCCESS", "SUCCESS"),
+        ("FAILURE", "FAILURE")
+    ]
+
     petsitter = models.ForeignKey(User, on_delete=models.CASCADE, related_name="Ситтер")
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="Владелец")
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
@@ -15,9 +21,11 @@ class PetsitterCheck(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
     start_time = models.TimeField(default="12:00")
+    status = models.CharField(max_length=255, choices=STATUSES, default="SUCCESS")
+    rest = models.IntegerField(default=-1)
 
     def __str__(self):
-        return f"Check system for {self.petsitter} by {self.owner}"
+        return f"Система проверки для {self.petsitter} от {self.owner}"
     
     def save(self, *args, **kwargs):
         self.clean()

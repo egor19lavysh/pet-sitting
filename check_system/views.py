@@ -20,7 +20,7 @@ scheduler = BackgroundScheduler()
 scheduler.add_jobstore(DjangoJobStore(), 'default')
 
 
-def schedule_report_requests(report_check: PetsitterCheck):
+def schedule_report_requests(report_check: PetsitterCheck, for_check: bool=False):
    
     start_time = report_check.start_time
     interval = report_check.interval
@@ -36,20 +36,28 @@ def schedule_report_requests(report_check: PetsitterCheck):
         for j in range(end_date.day - start_date.day + 1):
             task_time = start_datetime + timedelta(days=i, hours=interval * j)
 
-            if task_time > today:
-                if 5 < task_time.hour < 22:
-                    time_list.append(task_time)
-                    #report_request.apply_async((report_check.petsitter.id, report_check.id), eta=task_time)
-                    scheduler.add_job(report_request, 'date', run_date=task_time, args=[report_check.petsitter.id, report_check.id])
-
-            elif task_time == today:
-                if task_time.hour > today.hour:
+            if not for_check:
+                if task_time.date() > today.date():
                     if 5 < task_time.hour < 22:
                         time_list.append(task_time)
-                        #report_request.apply_async((report_check.petsitter.id, report_check.id), eta=task_time)
-                        scheduler.add_job(report_request, 'date', run_date=task_time, args=[report_check.petsitter.id, report_check.id])
+
+                elif task_time.date() == today.date():
+                    if task_time.hour > today.hour:
+                        if 5 < task_time.hour < 22:
+                            time_list.append(task_time)
+            else:
+                if 5 < task_time.hour < 22:
+                        time_list.append(task_time)
+
                         
     print(time_list)
+    return time_list
+
+def schedule_notifications(report_check: PetsitterCheck):
+    time_list = schedule_report_requests(report_check)
+
+    for task_time in time_list: 
+        scheduler.add_job(report_request, 'date', run_date=task_time, args=[report_check.petsitter.id, report_check.id])
     
 register_events(scheduler)
 scheduler.start()
@@ -89,12 +97,13 @@ def activate(request, pk: int):
             form = PetsitterCheckForm(request.POST)
             if form.is_valid():
                 system = form.save(commit=False)
-                print(order)
                 system.order = order
                 system.petsitter = order.petsitter
                 system.owner = order.owner
                 system.start_date = order.first_day
                 system.end_date = order.last_day
+                system.status = "IN PROCESS"
+                system.rest = (system.end_date - system.start_date).days * system.frequency
 
                 system.save()
 
@@ -102,7 +111,7 @@ def activate(request, pk: int):
                 create_notification(type="other", message="Система проверки активирована!", user_id=system.petsitter.id)
 
 
-                schedule_report_requests(system)
+                schedule_notifications(system)
 
                 return redirect("main:index")
         else:
@@ -120,6 +129,20 @@ def stop(request, pk: int):
 def load_report(request, pk: int):
     system = get_object_or_404(PetsitterCheck, id=pk)
     if request.user == system.petsitter:
+
+        time_list = schedule_report_requests(system, for_check=True)
+        now = datetime.datetime.now()
+
+        in_interval = False
+
+        for task_time in time_list:
+            if task_time - timedelta(minutes=30) <= now <= task_time + timedelta(minutes=30):
+                in_interval = True
+                break
+
+        if not in_interval:
+            return HttpResponse("Неподходящее время для отчета. Дождитесь уведомления!")
+
         if request.method == "POST":
             form = ReportForm(request.POST, request.FILES)
             if form.is_valid():
@@ -132,6 +155,14 @@ def load_report(request, pk: int):
                     pass
 
                 report.save()
+
+                if system.rest - 1 > 0:
+                    system.rest -= 1
+                    system.save()
+                elif system.rest - 1 == 0:
+                    system.status = "SUCCESS"
+                    system.rest -= 1
+                    system.save()
 
                 create_notification(type="report_watch", message=f"Загружен отчет по системе проверки {system.id}", user_id=system.owner.id, object_id=report.id)
 

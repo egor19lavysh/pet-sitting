@@ -6,7 +6,7 @@ from .forms import ReviewForm, ReviewImageForm, ReplyForm
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
-
+from notifications.views import create_notification
 
 User = get_user_model()
 
@@ -42,8 +42,10 @@ class ReviewCreateView(CreateView):
 
             for img in request.FILES.getlist("images"):
                 ReviewImage(image=img, review=review).save()
+
             
             update_user_rating(user)
+            create_notification(type="review", message=f"Добавлен новый отзыв от пользователя {review.reviewer.username}", user_id=user.id)
             
             return self.form_valid(form)
         else:
@@ -68,6 +70,9 @@ def review_update_view(request, pk):
             for img in request.FILES.getlist("images"):
                 ReviewImage(image=img, review=review).save()
 
+            update_user_rating(review.user)
+            create_notification(type="review", message=f"Пользователь {review.reviewer.username} изменил свой отзыв на вашей странице", user_id=review.user.id)
+
             return redirect('/')
     else:
         return render(request, "rating/review_update_form.html", {'form': ReviewForm(instance=review), 'images': images, 'review_image_form': ReviewImageForm()})
@@ -77,6 +82,13 @@ class ReviewDeleteView(DeleteView):
     model=Review
     success_url=reverse_lazy("main:index")
     template_name="rating/review_delete_form.html"
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        response = super().delete(request, *args, **kwargs)
+        update_user_rating(self.user)
+        create_notification(type="review", message=f"Пользователь {self.reviewer.username} удалил свой отзыв на вашей странице", user_id=self.user.id)
+        return response
 
 class ReplyCreateView(CreateView):
     model=Reply
@@ -101,6 +113,8 @@ class ReplyCreateView(CreateView):
             reply.review = get_object_or_404(Review, id=pk)
             reply.save()
 
+            create_notification(type="review", message=f"Пользователь {reply.review.user.username} оставил ответ на ваш отзыв", user_id=reply.review.reviewer.id)
+
             return redirect("main:user_profile", username=request.user.username)
         else:
             return self.form_invalid(form)
@@ -124,6 +138,11 @@ class ReplyUpdateView(UpdateView):
         if request.user != reply.review.user:
             return HttpResponse("У вас нет права доступа.", status=400) 
         return super().dispatch(request, pk, *args, **kwargs)
+    
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        create_notification(type="review", message=f"Пользователь {self.object.review.user.username} изменил ответ на ваш отзыв", user_id=self.object.review.reviewer.id)
+        return response
 
 
 class ReplyDeleteView(DeleteView):
@@ -138,3 +157,8 @@ class ReplyDeleteView(DeleteView):
         if request.user != reply.review.user:
             return HttpResponse("У вас нет права доступа.", status=400) 
         return super().dispatch(request, pk, *args, **kwargs)
+    
+    def delete(self, request, *args, **kwargs):
+        response = super().delete(request, *args, **kwargs)
+        create_notification(type="review", message=f"Пользователь {self.object.review.user.username} удалил ответ на ваш отзыв", user_id=self.object.review.reviewer.id)
+        return response
