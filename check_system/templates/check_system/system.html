@@ -10,9 +10,3 @@
 <p> Частота напоминаний: {{ system.frequency }} </p>
 
 <a href="{% url "main:application_detail" request.user.username system.order.id %}"> {{ system.order }} </a>
-
-{% if system.petsitter == request.user %}
-
-<a href="{% url "check_system:load_report" system.id %}"> Загрузить отчет </a>
-
-{% endif %}

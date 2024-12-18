@@ -1,9 +1,8 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.http import HttpResponse
-from .forms import PetsitterCheckForm, ReportForm
-from .models import Report
+from .forms import PetsitterCheckForm, ReportForm, RejectForm, RejectImageForm
 from orders.models import Order
-from .models import PetsitterCheck, Report
+from .models import PetsitterCheck, Report, RejectImage, Reject
 from datetime import time, timedelta
 import datetime
 from .tasks import report_request
@@ -13,6 +12,7 @@ from .giga_chat_api import prompt
 from notifications.views import create_notification
 from apscheduler.schedulers.background import BackgroundScheduler
 from django_apscheduler.jobstores import DjangoJobStore, register_events, register_job
+from django.views.generic import ListView, DetailView
 
 User = get_user_model()
 
@@ -123,8 +123,41 @@ def activate(request, pk: int):
             
 
 def stop(request, pk: int):
-    pass
+    system = get_object_or_404(PetsitterCheck, id=pk)
+    if request.user == system.owner:
+        if request.method == "POST":
+            form = RejectForm(request.POST, request.FILES)
 
+            if form.is_valid():
+                reject = form.save(commit=False)
+                reject.system = system
+                reject.save()
+
+                for img in request.FILES.getlist("images"):
+                    RejectImage(image=img, reject=reject).save()
+                
+                return HttpResponse("Ваше обращение об остановке системы проверки сохранено!<br>Наши менеджеры рассмотрят его и предпримут определенные действия.")
+        else:
+            form = RejectForm()
+            image_form = RejectImageForm()
+
+            return render(request, "check_system/reject_form.html", {"form": form, "image_form": image_form})
+    else:
+        return HttpResponse("У вас нет доступа.")
+
+class RejectListView(ListView):
+    model=Reject
+    template_name="check_system/reject_list.html"
+
+class RejectDetailView(DetailView):
+    model=Reject
+    template_name="check_system/reject.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["images"] = RejectImage.objects.filter(reject=context["object"]) 
+        return context
+    
 
 def load_report(request, pk: int):
     system = get_object_or_404(PetsitterCheck, id=pk)

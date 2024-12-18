@@ -1,0 +1,8 @@
+<h1>Ваши обращения</h1>
+<ul>
+{% for reject in object_list %}
+    <li><a href="{% url "check_system:reject_detail" reject.id %}">{{ reject }}</a></li>
+{% empty %}
+    <li>Нет обращений.</li>
+{% endfor %}
+</ul>

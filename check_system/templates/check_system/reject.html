@@ -1,0 +1,22 @@
+<h2> {{ object }} </h1>
+
+Система проверки: {{ object.system }}
+Текст обращения: {{ object.text }}
+{% if object.video %}
+Видео:
+<video width="530" height="440" controls autoplay>
+    <source src="{{ object.video.url }}" type="video/mp4"> </source>
+</video>
+{% endif %}
+
+Изображения
+    {% for image in images %}
+        <div>
+            <img src="{{ image.image.url }}" alt="Review Image" style="max-width: 200px; max-height: 200px;">
+        </div>
+    {% empty %}
+        <p>Нет загруженных изображений</p>
+    {% endfor %}
+
+Статус: {{ object.status }}
+Дата: {{ object.timestamp }}

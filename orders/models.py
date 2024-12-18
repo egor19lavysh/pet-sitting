@@ -13,9 +13,9 @@ class Order(models.Model):
         )
     class WEIGHT_CHOICES:
         CHOICES = (
-            ("<5", "Легкий (до 5 кг)"),
-            (">5 & <15", "Средний (до 15 кг)"),
-            (">20", "Тяжелый (больше 15 кг)")
+            ("Легкий (до 5 кг)", "Легкий (до 5 кг)"),
+            ("Средний (до 15 кг)", "Средний (до 15 кг)"),
+            ("Тяжелый (больше 15 кг)", "Тяжелый (больше 15 кг)")
         )
 
     class HOME_CHOICES:
@@ -54,22 +54,12 @@ class Order(models.Model):
         if self.price < 0:
             raise ValidationError("Цена не может отрицательной")
         
-        if not (self.need_sitting or self.need_walking):
-            raise ValidationError("Выберите услугу")
-        
     def save(self, *args, **kwargs):
         self.clean()
         super().save(*args, **kwargs)
 
     def __str__(self):
-        prefix = "Завяка на"
-
-        if self.need_sitting:
-            prefix += " передержку"
-
-            if self.need_walking:
-
-                prefix += " и выгул"
+        prefix = "Завяка на передержку"
         duration = self.last_day - self.first_day
         prefix += f" питомца на {duration.days} дня от {self.owner.first_name} {self.owner.last_name}"
 

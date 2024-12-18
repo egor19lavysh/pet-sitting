@@ -53,3 +53,24 @@ class Report(models.Model):
     def save(self, *args, **kwargs):
         self.clean()
         super().save(*args, **kwargs)
+
+
+class Reject(models.Model):
+    CHOICES = (
+        ("В рассмотрении", "В рассмотрении"),
+        ("Отказано", "Отказано"),
+        ("Принято", "Принято"),
+    )
+
+    system = models.ForeignKey(PetsitterCheck, verbose_name="Система проверки", on_delete=models.CASCADE)
+    text = models.TextField()
+    video = models.FileField(upload_to="reject_video/", blank=True, null=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(choices=CHOICES, max_length=50, default="В рассмотрении")
+
+    def __str__(self):
+        return f"Обращение на остановку системы проверки от {self.timestamp}"
+
+class RejectImage(models.Model):
+    reject = models.ForeignKey(Reject, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to="reject_image/")

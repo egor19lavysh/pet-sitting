@@ -1,0 +1,12 @@
+<h1> Оставить обращение </h1>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    
+    {{ form.as_p }}
+    
+    <h2>Добавить изображения</h2>
+    {{ image_form.as_p }}
+    
+    <button type="submit">Создать обращение</button>
+</form>
