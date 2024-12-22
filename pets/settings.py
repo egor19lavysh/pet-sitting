@@ -66,7 +66,18 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'middleware.admin_access_middleware.RestrictStaffToAdminMiddleware',
 ]
+
+# # List of IP addresses allowed to access non-admin paths
+# ALLOWED_IPS = ['127.0.0.1', '192.168.1.1']
+
+# # List of IP addresses allowed to access admin paths
+# ALLOWED_ADMIN_IPS = []
+
+# # Dictionary of restricted paths with IP restrictions
+# RESTRICTED_PATH = {}
+
 
 ROOT_URLCONF = 'pets.urls'
 
@@ -86,7 +97,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'pets.wsgi.application'
+#WSGI_APPLICATION = 'pets.wsgi.application'
 
 
 # Database
