@@ -118,6 +118,9 @@ DATABASES = {
         'PASSWORD': 'password', # Пароль пользователя
         'HOST': 'localhost',
         'PORT': '5432',  # Порт базы данных
+        'TEST': {
+            'NAME': 'my_test_db'
+        }
     }
 }
 
