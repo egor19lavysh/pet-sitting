@@ -116,7 +116,7 @@ DATABASES = {
         'NAME': 'lappy_db', # Имя базы данных
         'USER': 'postgres', # Имя пользователя
         'PASSWORD': 'password', # Пароль пользователя
-        'HOST': 'localhost',
+        'HOST': "127.0.0.1",
         'PORT': '5432',  # Порт базы данных
         'TEST': {
             'NAME': 'my_test_db'

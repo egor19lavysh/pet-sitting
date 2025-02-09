@@ -1,4 +1,4 @@
-from django.http import Http404
+from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from django.views.generic.detail import DetailView
@@ -35,10 +35,7 @@ class PetDetailView(LoginRequiredMixin, PetOwnerRequiredMixin, DetailView):
 @login_required(login_url="/users/login/")
 @owner_required
 def update_pet(request, pk: int):
-    try:
-        pet = get_object_or_404(Pet, id=pk)
-    except Exception:
-        raise Http404('Такого пэта не существует')
+    pet = get_object_or_404(Pet, id=pk)
     if request.method == 'POST':
         form = PetForm(request.POST, request.FILES, instance=pet)
         if form.is_valid():
@@ -47,20 +44,13 @@ def update_pet(request, pk: int):
             return redirect(f"/pet/{pk}")
     else:
         form = PetForm(instance=pet)
-        context = {
-            'form': form
-        }
-        return render(request, 'pet/update.html', context)
+    return render(request, 'pet/update.html', {'form': form})
 
 
 @login_required(login_url="/users/login/")
 @owner_required
 def delete_pet(request, pk: int):
-    try:
-        pet = get_object_or_404(Pet, id=pk)
-    except Exception:
-        raise Http404('Такого пэта не существует')
-
+    pet = get_object_or_404(Pet, id=pk)
     if request.method == 'POST':
         pet.delete()
         return redirect('/')
