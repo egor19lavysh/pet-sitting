@@ -4,10 +4,10 @@ from django.contrib.auth import get_user_model
 
 
 class CategoryModelTest(TestCase):
-    '''
+    """
     en: Class for testing model Category
     ru: Класс для тестирования модели Category
-    '''
+    """
 
     def setUp(self):
         self.category = Category.objects.create(name='Собака')

@@ -31,7 +31,7 @@ class Pet(models.Model):
     breed = models.ForeignKey(Breed, on_delete=models.PROTECT, verbose_name="Порода питомца")
     owner = models.ForeignKey(get_user_model(),
                               on_delete=models.CASCADE,
-                              verbose_name="Владелец Питомца")
+                              verbose_name="Владелец питомца")
     weight = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Вес питомца")
     certificate = models.BooleanField(default=False, verbose_name="Сертификат с прививками")
     info = models.TextField(verbose_name="Дополнительная информация о питомце")
