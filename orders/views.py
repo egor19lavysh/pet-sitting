@@ -11,8 +11,9 @@ from .mixins import OrderOwnerRequiredMixin
 from pet.models import Pet
 from notifications.views import create_notification
 
+
 @login_required(login_url="/users/login/")
-def create_order(request, petsitter_id):
+def create_order(request, petsitter_id: int):
     if request.method == "POST":
 
         form = OrderForm(request.POST, request.FILES)
@@ -26,11 +27,13 @@ def create_order(request, petsitter_id):
 
             order.save()
 
-            create_notification(type="order_created", message=f"Создана заявка на передержку {order.category} {order.name}", 
+            create_notification(type="order_created",
+                                message=f"Создана заявка на передержку {order.category} {order.name}",
                                 user_id=petsitter_id, object_id=order.id)
-            create_notification(type="order_created", message=f"Создана заявка на передержку {order.category} {order.name}", 
+            create_notification(type="order_created",
+                                message=f"Создана заявка на передержку {order.category} {order.name}",
                                 user_id=order.owner.id, object_id=order.id)
-            
+
             if 'pet_id' in request.session:
                 del request.session['pet_id']
 
@@ -49,49 +52,51 @@ def create_order(request, petsitter_id):
                         'weight': pet.weight,
                         'certificate': pet.certificate,
                         'info': pet.info
-                        })
+                    })
                 else:
                     form = OrderForm(initial={
-                            'name': pet.name,
-                            'category': pet.category,
-                            'breed': pet.breed,
-                            'age': pet.age,
-                            'weight': pet.weight,
-                            'certificate': pet.certificate,
-                            'info': pet.info
-                        })
-                
-                    
+                        'name': pet.name,
+                        'category': pet.category,
+                        'breed': pet.breed,
+                        'age': pet.age,
+                        'weight': pet.weight,
+                        'certificate': pet.certificate,
+                        'info': pet.info
+                    })
+
+
             else:
                 form = OrderForm()
         else:
             form = OrderForm()
 
-    #del request.session["pet_id"]
-    return render(request, "orders/create.html", {"form" : form})
+    # del request.session["pet_id"]
+    return render(request, "orders/create.html", {"form": form})
+
 
 class UpdateOrderView(LoginRequiredMixin, OrderOwnerRequiredMixin, UpdateView):
     model = Order
-    fields=["photo", "name", "category", 
-            "breed", "need_walking", "need_sitting", 
-            "first_day", "last_day", "price", 
-            "age", "weight", "certificate", "info"
-            ]
+    fields = ["photo", "name", "category",
+              "breed", "walking", "place",
+              "first_day", "last_day", "price",
+              "age", "weight", "certificate", "info"
+              ]
     template_name_suffix = "_update_form"
     success_url = reverse_lazy("main:index")
     login_url = "users:login"
 
     def form_valid(self, form):
         self.object = form.save()
-        create_notification(type="order_status", message=f"Заявка на передержку {self.object.category} {self.object.name} изменена", 
-                                user_id=self.object.petsitter.id, object_id=self.object.id)
-        create_notification(type="order_status", message=f"Заявка на передержку {self.object.category} {self.object.name} изменена", 
-                                user_id=self.object.owner.id, object_id=self.object.id)
+        create_notification(type="order_status",
+                            message=f"Заявка на передержку {self.object.category} {self.object.name} изменена",
+                            user_id=self.object.petsitter.id, object_id=self.object.id)
+        create_notification(type="order_status",
+                            message=f"Заявка на передержку {self.object.category} {self.object.name} изменена",
+                            user_id=self.object.owner.id, object_id=self.object.id)
         return HttpResponseRedirect(self.get_success_url())
 
+
 class DeleteOrderView(LoginRequiredMixin, OrderOwnerRequiredMixin, DeleteView):
-    model = Order 
+    model = Order
     success_url = reverse_lazy("main:show_petsitters")
     login_url = "users:login"
-
-
