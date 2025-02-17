@@ -64,13 +64,13 @@ def create_order(request, petsitter_id: int):
                         'info': pet.info
                     })
 
-
             else:
                 form = OrderForm()
+
+            del request.session["pet_id"]
         else:
             form = OrderForm()
 
-    # del request.session["pet_id"]
     return render(request, "orders/create.html", {"form": form})
 
 

@@ -177,7 +177,7 @@ class OrderModelTest(TestCase):
         except ValidationError:
             self.fail(msg="Метод clean модели Order вызывает ошибку при валидных данных")
 
-    def test_clean_invalid_dates(self):
+    def test_clean_invalid_data(self):
         order = Order(
             name='Персик',
             category=self.category,
