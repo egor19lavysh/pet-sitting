@@ -122,7 +122,7 @@ class ReplyCreateView(CreateView):
     def dispatch(self, request, pk, *args, **kwargs):
         review = get_object_or_404(Review, id=pk)
         if request.user != review.user:
-            return HttpResponse("У вас нет права доступа.", status=400) 
+            return HttpResponse("У вас нет права доступа.", status=403) 
         return super().dispatch(request, pk, *args, **kwargs)
 
 class ReplyUpdateView(UpdateView):
@@ -136,7 +136,7 @@ class ReplyUpdateView(UpdateView):
     def dispatch(self, request, pk, *args, **kwargs):
         reply = get_object_or_404(Reply, id=pk)
         if request.user != reply.review.user:
-            return HttpResponse("У вас нет права доступа.", status=400) 
+            return HttpResponse("У вас нет права доступа.", status=403) 
         return super().dispatch(request, pk, *args, **kwargs)
     
     def form_valid(self, form):
@@ -155,7 +155,7 @@ class ReplyDeleteView(DeleteView):
     def dispatch(self, request, pk, *args, **kwargs):
         reply = get_object_or_404(Reply, id=pk)
         if request.user != reply.review.user:
-            return HttpResponse("У вас нет права доступа.", status=400) 
+            return HttpResponse("У вас нет права доступа.", status=403) 
         return super().dispatch(request, pk, *args, **kwargs)
     
     def delete(self, request, *args, **kwargs):
