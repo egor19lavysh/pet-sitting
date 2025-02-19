@@ -61,7 +61,7 @@ def ApplicationsListView(request, username):
             return render(request, "main/applications_list.html", context=context)
         return render(request, "main/applications_list.html", context={"object_list" : Order.objects.filter(Q(petsitter=request.user) | Q(owner=request.user)).order_by("-created_at")})
     else: 
-        return HttpResponse("У вас нет доступа.")
+        return HttpResponse("У вас нет доступа.", status=403)
 
 
 class ApplicationDetailView(LoginRequiredMixin, OrderOwnerPetsitterRequiredMixin, DetailView):
@@ -82,7 +82,7 @@ def accept_app_status(request, pk : int):
                                 object_id=app.id)
             return redirect("main:index")
         else:
-            return HttpResponse("У вас нет доступа к этому ресурсу.")
+            return HttpResponse("У вас нет доступа к этому ресурсу.", status=403)
     else:
         return HttpResponse("Что-то пошло не так...")
     
@@ -99,7 +99,7 @@ def reject_app_status(request, pk : int):
                                 object_id=app.id)
             return redirect("main:index")     
         else:
-            return HttpResponse("У вас нет доступа к этому ресурсу.")
+            return HttpResponse("У вас нет доступа к этому ресурсу.", status=403)
     else:
         return HttpResponse("Что-то пошло не так...")
     
@@ -109,4 +109,4 @@ def petsitter_profile(request, id: int):
         petsitter = Petsitter.objects.get(user=user)
         return render(request, "main/petsitter_profile.html", {"user" : user, "petsitter" : petsitter})
     else:
-        return HttpResponse("Пользователь не найден")
+        return HttpResponse("Пользователь не найден", status=404)
