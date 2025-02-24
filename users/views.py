@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from django.urls import reverse, reverse_lazy
 from .forms import RegisterUserForm, RegisterPetsitterForm, LoginUserForm
 from django.contrib import messages
@@ -19,6 +19,7 @@ from django.template.loader import render_to_string
 from .tokens import account_activation_token 
 from django.core.mail import send_mail
 from pets.settings import EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 
@@ -111,31 +112,41 @@ class PetsitterUpdate(UpdateView):
     def get_object(self, queryset=None):
         return get_object_or_404(Petsitter, user=self.request.user)
     
-class UserDelete(DeleteView):
+class UserDelete(LoginRequiredMixin, DeleteView):
     model=User
     success_url=reverse_lazy("main:index")
     template_name_suffix = "_delete_form"
-
+    login_url = 'users:login'
 
     def get_object(self, queryset=None):
         return self.request.user
 
-class PetsitterDelete(DeleteView):
-    model=Petsitter
-    success_url=reverse_lazy("main:index")
+class PetsitterDelete(LoginRequiredMixin, DeleteView):
+    model = Petsitter
+    success_url = reverse_lazy("main:index")
     template_name = "users/petsitter_delete_form.html"
-
+    login_url = 'users:login'
 
     def get_object(self, queryset=None):
-        return self.request.user
+        return get_object_or_404(Petsitter, user=self.request.user)
+    
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_petsitter:
+            return HttpResponseForbidden(reverse("main:index"))
+        return super().dispatch(request, *args, **kwargs)
     
     def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        user = request.user
+        self.object = self.get_object()  # Получаем объект Petsitter
+        user = self.object.user
+        # Сначала меняем флаг у пользователя
         user.is_petsitter = False
         user.save()
+        # Обновляем пользователя в сессии
+        request.user = user
+        # Потом удаляем объект Petsitter
         self.object.delete()
-        return super().delete(request, *args, **kwargs)
+        return HttpResponseRedirect(self.get_success_url())
+
 
 @login_required(login_url="/users/login/")
 def register_petsitter(request):

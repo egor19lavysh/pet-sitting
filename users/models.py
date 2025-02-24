@@ -29,11 +29,6 @@ class User(AbstractUser):
     city = models.ForeignKey(City, on_delete=models.DO_NOTHING, null=True)
     region = models.ForeignKey(Region, on_delete=models.DO_NOTHING, null=True)
     rating = models.FloatField(default=0.0)
-    
-    # from django.utils.traslation import gettext_lazy as _
-    # email = models.EmailField(_("email address"), unique=True,)
-    # USERNAME_FIELD = "email"
-    # REQUIRED_FIELDS = ["username"]
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
