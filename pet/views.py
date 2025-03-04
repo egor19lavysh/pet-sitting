@@ -1,65 +1,48 @@
-from django.http import HttpResponseForbidden
-from django.shortcuts import get_object_or_404, redirect, render
-from django.contrib.auth.decorators import login_required
-from django.views.generic.detail import DetailView
-from .forms import PetForm
-from .models import Pet
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, UpdateView, DeleteView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import redirect
+from .models import Pet
+from .forms import PetForm
 from .mixins import PetOwnerRequiredMixin
-from .decorators import owner_required
 
+class PetCreateView(LoginRequiredMixin, CreateView):
+    model = Pet
+    form_class = PetForm
+    template_name = "pet/create.html"
+    success_url = reverse_lazy("main:index")
 
-@login_required(login_url="/users/login/")
-def create_pet(request):
-    if request.method == "POST":
-
-        form = PetForm(request.POST, request.FILES)
-
-        if form.is_valid():
-            pet = form.save(commit=False)
-            pet.owner = request.user
-            pet.save()
-
-            return redirect("main:index")
-    else:
-        form = PetForm()
-
-    return render(request, "pet/create_form.html", {"form": form})
-
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
 
 class PetDetailView(LoginRequiredMixin, PetOwnerRequiredMixin, DetailView):
     model = Pet
-    template_name = "pet/show_pet.html"
+    template_name = "pet/show.html"
 
+class PetUpdateView(LoginRequiredMixin, PetOwnerRequiredMixin, UpdateView):
+    model = Pet
+    form_class = PetForm
+    template_name = "pet/update.html"
 
-@login_required(login_url="/users/login/")
-@owner_required
-def update_pet(request, pk: int):
-    pet = get_object_or_404(Pet, id=pk)
-    if request.method == 'POST':
-        form = PetForm(request.POST, request.FILES, instance=pet)
-        if form.is_valid():
-            form.save()
+    def get_success_url(self):
+        return reverse_lazy("pet:detail", kwargs={"pk": self.object.id})
 
-            return redirect(f"/pet/{pk}")
-    else:
-        form = PetForm(instance=pet)
-    return render(request, 'pet/update.html', {'form': form})
+class PetDeleteView(LoginRequiredMixin, PetOwnerRequiredMixin, DeleteView):
+    model = Pet
+    template_name = "pet/delete.html"
+    success_url = reverse_lazy("main:index")
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["name"] = self.object.name
+        return context
 
-@login_required(login_url="/users/login/")
-@owner_required
-def delete_pet(request, pk: int):
-    pet = get_object_or_404(Pet, id=pk)
-    if request.method == 'POST':
-        pet.delete()
-        return redirect('/')
-    else:
-        return render(request, 'pet/delete.html', {"name": pet.name})
-
-
-@login_required(login_url="/users/login/")
-@owner_required
-def select_pet(request, pk):
-    request.session["pet_id"] = pk
-    return redirect("main:show_petsitters")
+# @login_required(login_url="/users/login/")
+# @owner_required
+# def select_pet(request, pk):
+#     try:
+#         PetService.select_pet(pk, request.user, request.session)
+#         return redirect("main:show_petsitters")
+#     except PermissionDenied:
+#         return HttpResponseForbidden("You do not have permission to select this pet.")
