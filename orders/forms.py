@@ -1,5 +1,7 @@
 from django import forms
 from .models import Order
+from pet.models import Pet
+from .schema import OrderSchema
 
 
 class OrderForm(forms.ModelForm):
@@ -8,4 +10,16 @@ class OrderForm(forms.ModelForm):
 
     class Meta:
         model = Order
-        exclude = ["owner", "petsitter", "created_at", "updated_at", "status"]
+        fields = [OrderSchema.pet, 
+                  OrderSchema.first_day,
+                  OrderSchema.last_day,
+                  OrderSchema.price, 
+                  OrderSchema.place, 
+                  OrderSchema.walking]
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(OrderForm, self).__init__(*args, **kwargs)
+
+        if user is not None:
+            self.fields['pet'].queryset = Pet.objects.filter(owner=user)

@@ -1,12 +1,5 @@
 class OrderSchema:
-    photo = "photo"
-    name = "name"
-    category = "category"
-    breed = "breed"
-    age = "age"
-    weight = "weight"
-    certificate = "certificate"
-    info = "info"
+    pet = "pet"
     walking = "walking"
     place = "place"
     first_day = "first_day"

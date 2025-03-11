@@ -3,83 +3,58 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from .forms import OrderForm
 from users.models import User
-from django.views.generic.edit import UpdateView, DeleteView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from .models import Order
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .mixins import OrderOwnerRequiredMixin
 from pet.models import Pet
 from notifications.views import create_notification
+from .schema import OrderSchema
 
 
 @login_required(login_url="/users/login/")
 def create_order(request, petsitter_id: int):
-    if request.method == "POST":
-
-        form = OrderForm(request.POST, request.FILES)
-
+    if request.method == 'POST':
+        form = OrderForm(request.POST, user=request.user)
         if form.is_valid():
-
             order = form.save(commit=False)
             order.owner = request.user
             order.petsitter = User.objects.get(id=petsitter_id)
             order.status = "waiting"
-
             order.save()
-
-            create_notification(type="order_created",
-                                message=f"Создана заявка на передержку {order.category} {order.name}",
-                                user_id=petsitter_id, object_id=order.id)
-            create_notification(type="order_created",
-                                message=f"Создана заявка на передержку {order.category} {order.name}",
-                                user_id=order.owner.id, object_id=order.id)
-
-            if 'pet_id' in request.session:
-                del request.session['pet_id']
-
             return redirect("main:index")
     else:
-        if "pet_id" in request.session:
-            pet = Pet.objects.get(id=request.session["pet_id"])
-            if pet:
-                if pet.photo:
-                    form = OrderForm(initial={
-                        'photo': pet.photo,
-                        'name': pet.name,
-                        'category': pet.category,
-                        'breed': pet.breed,
-                        'age': pet.age,
-                        'weight': pet.weight,
-                        'certificate': pet.certificate,
-                        'info': pet.info
-                    })
-                else:
-                    form = OrderForm(initial={
-                        'name': pet.name,
-                        'category': pet.category,
-                        'breed': pet.breed,
-                        'age': pet.age,
-                        'weight': pet.weight,
-                        'certificate': pet.certificate,
-                        'info': pet.info
-                    })
+        form = OrderForm(user=request.user)
 
-            else:
-                form = OrderForm()
+    return render(request, "orders/create.html", {'form': form})
 
-            del request.session["pet_id"]
-        else:
-            form = OrderForm()
-
-    return render(request, "orders/create.html", {"form": form})
-
-
-class UpdateOrderView(LoginRequiredMixin, OrderOwnerRequiredMixin, UpdateView):
+class OrderCreateView(LoginRequiredMixin, CreateView):
     model = Order
-    fields = ["photo", "name", "category",
-              "breed", "walking", "place",
-              "first_day", "last_day", "price",
-              "age", "weight", "certificate", "info"
+    form_class = OrderForm
+    template_name = "orders/create.html"
+    success_url = reverse_lazy("main:index")
+    login_url = reverse_lazy("users:login")
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        form.instance.petsitter = get_object_or_404(User, id=self.kwargs["petsitter_id"])
+        form.instance.status = Order.StatusChoices.IN_PROCESS
+        return super().form_valid(form)
+
+class OrderUpdateView(LoginRequiredMixin, OrderOwnerRequiredMixin, UpdateView):
+    model = Order
+    fields = [
+              OrderSchema.first_day, 
+              OrderSchema.last_day, 
+              OrderSchema.price,
+              OrderSchema.walking,
+              OrderSchema.place
               ]
     template_name_suffix = "_update_form"
     success_url = reverse_lazy("main:index")
@@ -88,15 +63,15 @@ class UpdateOrderView(LoginRequiredMixin, OrderOwnerRequiredMixin, UpdateView):
     def form_valid(self, form):
         self.object = form.save()
         create_notification(type="order_status",
-                            message=f"Заявка на передержку {self.object.category} {self.object.name} изменена",
+                            message=f"Заявка на передержку {self.object.pet.category} {self.object.pet.name} изменена",
                             user_id=self.object.petsitter.id, object_id=self.object.id)
         create_notification(type="order_status",
-                            message=f"Заявка на передержку {self.object.category} {self.object.name} изменена",
+                            message=f"Заявка на передержку {self.object.pet.category} {self.object.pet.name} изменена",
                             user_id=self.object.owner.id, object_id=self.object.id)
         return HttpResponseRedirect(self.get_success_url())
 
 
-class DeleteOrderView(LoginRequiredMixin, OrderOwnerRequiredMixin, DeleteView):
+class OrderDeleteView(LoginRequiredMixin, OrderOwnerRequiredMixin, DeleteView):
     model = Order
     success_url = reverse_lazy("main:show_petsitters")
     login_url = "users:login"
