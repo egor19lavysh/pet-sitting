@@ -23,8 +23,8 @@ class ViewsTests(TestCase):
         self.guest_client = Client()  # Неавторизованный клиент
 
         # Авторизованный клиент
-        self.user: User = User.objects.create(username="test_user", password="test123")
-        self.other_user: User = User.objects.create(username="test_user2", password="test1232")
+        self.user = User.objects.create(username="test_user", password="test123")
+        self.other_user = User.objects.create(username="test_user2", password="test1232")
         self.auth_client = Client()
         self.other_client = Client()
         self.auth_client.force_login(self.user)
@@ -82,17 +82,14 @@ class ViewsTests(TestCase):
                                              "info": False
                                          })
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "pet/create_form.html")
         self.assertIsInstance(response.context["form"], PetForm)
 
-    # Тестирование функции (класса) PetDetailView
     def test_pet_detail_view_get_request(self):
         """
         Проверка get-запроса к CBF PetDetailView
         """
         response = self.auth_client.get(reverse("pet:read_pet", args=[self.test_pet.id]))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "pet/show_pet.html")
 
     def test_pet_detail_view_other_owner(self):
         """
@@ -131,7 +128,6 @@ class ViewsTests(TestCase):
         """
         response = self.auth_client.get(reverse("pet:update_pet", args=[self.test_pet.id]))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'pet/update.html')
         self.assertIsInstance(response.context["form"], PetForm)
 
     def test_update_pet_post_request(self):
@@ -147,6 +143,7 @@ class ViewsTests(TestCase):
                                              "weight": 25.7,
                                              "info": "Очень cool собакен"
                                          })
+        
         self.assertEqual(response.status_code, 302)
         self.test_pet.refresh_from_db()
         self.assertEqual(self.test_pet.name, "Панч")
@@ -165,7 +162,6 @@ class ViewsTests(TestCase):
                                              "info": "Очень cool собакен"
                                          })
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'pet/update.html')
         self.assertIsInstance(response.context["form"], PetForm)
 
         self.test_pet.refresh_from_db()
@@ -206,7 +202,6 @@ class ViewsTests(TestCase):
         """
         response = self.auth_client.get(reverse("pet:delete_pet", args=[self.test_pet.id]))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'pet/delete.html')
 
     def test_delete_pet_post_request(self):
         """

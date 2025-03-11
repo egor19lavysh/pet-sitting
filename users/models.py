@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from phonenumber_field.modelfields import PhoneNumberField
-from pet.models import Category
+#from pet.models import Category
 from django.urls import reverse
 
 class Region(models.Model):
@@ -47,7 +47,7 @@ class Petsitter(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     experience = models.CharField(max_length=255, choices=CHOICES)
-    categories = models.ManyToManyField(Category)
+    categories = models.ManyToManyField("pet.Category")
     min_price = models.DecimalField(decimal_places=2, max_digits=7, default=0.00)
 
     def __str__(self):

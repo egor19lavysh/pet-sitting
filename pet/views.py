@@ -18,7 +18,7 @@ class PetCreateView(LoginRequiredMixin, CreateView):
 
 class PetDetailView(LoginRequiredMixin, PetOwnerRequiredMixin, DetailView):
     model = Pet
-    template_name = "pet/show.html"
+    template_name = "pet/read.html"
     login_url = reverse_lazy("users:login")
 
 class PetUpdateView(LoginRequiredMixin, PetOwnerRequiredMixin, UpdateView):
