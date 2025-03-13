@@ -16,8 +16,8 @@ class Order(models.Model):
         REJECTED = "Отклонено"
 
     class HomeChoices(models.TextChoices):
-        PETSITTER_HOME = "Передержка в доме у ситтера"
-        OWNER_HOME = "Передержка у вас дома"
+        PETSITTER_HOME = "Передержка в доме у ситтера", "Передержка в доме у ситтера"
+        OWNER_HOME = "Передержка у вас дома", "Передержка у вас дома"
 
     owner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Владелец питомца")
     pet = models.ForeignKey(Pet, on_delete=models.CASCADE, verbose_name="Питомец")
