@@ -1,19 +1,18 @@
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from .forms import OrderForm
 from users.models import User
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
-from .models import Order
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .mixins import *
-from pet.models import Pet
 from notifications.views import create_notification
 from .schema import OrderSchema
 from django.db.models import Q
+
 
 @login_required(login_url="/users/login/")
 def create_order(request, petsitter_id: int):
@@ -30,6 +29,7 @@ def create_order(request, petsitter_id: int):
         form = OrderForm(user=request.user)
 
     return render(request, "orders/create.html", {'form': form})
+
 
 class OrderCreateView(LoginRequiredMixin, CreateView):
     model = Order
@@ -56,15 +56,16 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
                             user_id=self.object.owner.id, object_id=self.object.id)
         return HttpResponseRedirect(self.get_success_url())
 
+
 class OrderUpdateView(LoginRequiredMixin, OrderOwnerRequiredMixin, UpdateView):
     model = Order
     fields = [
-              OrderSchema.first_day, 
-              OrderSchema.last_day, 
-              OrderSchema.price,
-              OrderSchema.walking,
-              OrderSchema.place
-              ]
+        OrderSchema.first_day,
+        OrderSchema.last_day,
+        OrderSchema.price,
+        OrderSchema.walking,
+        OrderSchema.place
+    ]
     template_name_suffix = "_update_form"
     success_url = reverse_lazy("main:index")
     login_url = "users:login"
@@ -79,10 +80,12 @@ class OrderUpdateView(LoginRequiredMixin, OrderOwnerRequiredMixin, UpdateView):
                             user_id=self.object.owner.id, object_id=self.object.id)
         return HttpResponseRedirect(self.get_success_url())
 
+
 class OrderDeleteView(LoginRequiredMixin, OrderOwnerRequiredMixin, DeleteView):
     model = Order
     success_url = reverse_lazy("main:show_petsitters")
     login_url = "users:login"
+
 
 class OrderListView(LoginRequiredMixin, ListView):
     model = Order
@@ -92,11 +95,13 @@ class OrderListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         qs = Order.objects.filter(Q(owner=self.request.user) | Q(petsitter=self.request.user))
         return qs
-    
+
+
 class OrderDetailView(LoginRequiredMixin, OrderOwnerPetsitterRequiredMixin, DetailView):
     model = Order
     login_url = "users:login"
     template_name = "orders/detail.html"
+
 
 class OrderUpdateStatusView(LoginRequiredMixin, OrderPetsitterRequiredMixin):
 
@@ -106,7 +111,7 @@ class OrderUpdateStatusView(LoginRequiredMixin, OrderPetsitterRequiredMixin):
         order.status = Order.StatusChoices.ACCEPTED
         order.save()
         return redirect(reverse("orders:detail_order", args=[order.id]))
-    
+
     @staticmethod
     def reject_order(request, order_id: int):
         order = get_object_or_404(Order, id=order_id)

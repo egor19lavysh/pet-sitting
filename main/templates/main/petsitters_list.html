@@ -1,17 +1,32 @@
-<h1> Петситтеры </h1>
-
-<h3>Фильтры:</h3>
 <form method="get">
-    {{ filter.form.as_p }}
+    <!-- Категории -->
+    <div class="filter-section">
+        <h3>Категории животных</h3>
+        {{ form.categories }}
+    </div>
+
+    <!-- Ценовой диапазон -->
+    <div class="filter-section">
+        <h3>Стоимость услуги</h3>
+        {{ form.min_price }}
+        {{ form.max_price }}
+    </div>
+
+    <!-- Опыт -->
+    <div class="filter-section">
+        <h3>Опыт работы</h3>
+        {{ form.experience }}
+    </div>
+
     <button type="submit">Фильтровать</button>
 </form>
 
-<hr>
-
-<ul>
-    {% for petsitter in filter.qs %}
-        <li><a href="{% url 'main:petsitter_profile' petsitter.user.id %}">{{ petsitter.user.username }}</a></li>
-    {% empty %}
-        <li>Петситтеры не найдены.</li>
-    {% endfor %}
-</ul>
+<!-- Список результатов -->
+{% for petsitter in petsitters %}
+    <div class="petsitter-card">
+        <h2>{{ petsitter.user.get_full_name }}</h2>
+        <p>Категории: {{ petsitter.categories.all|join:", " }}</p>
+        <p>Цена: {{ petsitter.price_per_hour }} руб/час</p>
+        <p>Опыт: {{ petsitter.get_experience_display }}</p>
+    </div>
+{% endfor %}

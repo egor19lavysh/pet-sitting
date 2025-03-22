@@ -1,0 +1,10 @@
+class PetSchema:
+    photo = "photo"
+    name = "name"
+    age = "age"
+    category = "category"
+    breed = "breed"
+    owner = "owner"
+    weight = "weight"
+    certificate = "certificate"
+    info = "info"

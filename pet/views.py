@@ -5,6 +5,7 @@ from .models import Pet
 from .forms import PetForm
 from .mixins import PetOwnerRequiredMixin
 
+
 class PetCreateView(LoginRequiredMixin, CreateView):
     model = Pet
     form_class = PetForm
@@ -16,10 +17,12 @@ class PetCreateView(LoginRequiredMixin, CreateView):
         form.instance.owner = self.request.user
         return super().form_valid(form)
 
+
 class PetDetailView(LoginRequiredMixin, PetOwnerRequiredMixin, DetailView):
     model = Pet
     template_name = "pet/read.html"
     login_url = reverse_lazy("users:login")
+
 
 class PetUpdateView(LoginRequiredMixin, PetOwnerRequiredMixin, UpdateView):
     model = Pet
@@ -29,6 +32,7 @@ class PetUpdateView(LoginRequiredMixin, PetOwnerRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy("pet:read_pet", kwargs={"pk": self.object.id})
+
 
 class PetDeleteView(LoginRequiredMixin, PetOwnerRequiredMixin, DeleteView):
     model = Pet

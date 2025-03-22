@@ -1,12 +1,17 @@
 from django import forms
 from .models import Pet
+from .schema import PetSchema
 
 
 class PetForm(forms.ModelForm):
-    '''
-    Форма для создания экземпляра класса (модели) Pet
-    '''
 
     class Meta:
         model = Pet
-        fields = ["photo", "name", "age", "category", "breed", "weight", "certificate", "info", ]
+        fields = [PetSchema.photo,
+                  PetSchema.name,
+                  PetSchema.age,
+                  PetSchema.category,
+                  PetSchema.breed,
+                  PetSchema.weight,
+                  PetSchema.certificate,
+                  PetSchema.info]

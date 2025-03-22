@@ -83,6 +83,7 @@
                             <p class="min_title_exp">О себе:</p>
                             <p class="exp_cont">{{user.about}}</p>
                             <p class="min_title_exp">Мои питомцы:</p>
+                                <p class="min_title_exp"><a href="{% url 'orders:create_order' user.id %}">Оставить заявку</a></p>
                             {% for pet in pets %}
                                 <div class="pet">
                                     {% if pet.photo.url != None %}
