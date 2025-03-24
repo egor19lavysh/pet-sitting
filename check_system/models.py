@@ -7,11 +7,10 @@ from orders.models import Order
 User = get_user_model()
 
 class PetsitterCheck(models.Model):
-    STATUSES = [
-        ("IN PROCESS", "IN PROCESS"),
-        ("SUCCESS", "SUCCESS"),
-        ("FAILURE", "FAILURE")
-    ]
+    class Statuses(models.TextChoices):
+        IN_PROCESS = "IN PROCESS", "IN PROCESS"
+        SUCCESS = "SUCCESS", "SUCCESS"
+        FAILURE = "FAILURE", "FAILURE"
 
     petsitter = models.ForeignKey(User, on_delete=models.CASCADE, related_name="Ситтер")
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="Владелец")
@@ -21,7 +20,7 @@ class PetsitterCheck(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
     start_time = models.TimeField(default="12:00")
-    status = models.CharField(max_length=255, choices=STATUSES, default="SUCCESS")
+    status = models.CharField(max_length=255, choices=Statuses, default=Statuses.IN_PROCESS)
     rest = models.IntegerField(default=-1)
 
     def __str__(self):
@@ -74,3 +73,6 @@ class Reject(models.Model):
 class RejectImage(models.Model):
     reject = models.ForeignKey(Reject, on_delete=models.CASCADE)
     image = models.ImageField(upload_to="reject_image/")
+
+
+print(PetsitterCheck.Statuses.SUCCESS)

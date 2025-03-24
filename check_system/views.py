@@ -5,7 +5,6 @@ from orders.models import Order
 from .models import PetsitterCheck, Report, RejectImage, Reject
 from datetime import time, timedelta
 import datetime
-from .tasks import report_request
 from django.contrib.auth import get_user_model
 from notifications.views import create_notification
 from .giga_chat_api import prompt
@@ -13,45 +12,14 @@ from notifications.views import create_notification
 from apscheduler.schedulers.background import BackgroundScheduler
 from django_apscheduler.jobstores import DjangoJobStore, register_events, register_job
 from django.views.generic import ListView, DetailView
+from .services import *
 
 User = get_user_model()
+
 
 scheduler = BackgroundScheduler()
 scheduler.add_jobstore(DjangoJobStore(), 'default')
 
-
-def schedule_report_requests(report_check: PetsitterCheck, for_check: bool=False):
-   
-    start_time = report_check.start_time
-    interval = report_check.interval
-    frequency = report_check.frequency
-    start_date = report_check.start_date
-    end_date = report_check.end_date
-
-    time_list = []
-    start_datetime = datetime.datetime.combine(start_date, start_time)
-    today = datetime.datetime.today()
-
-    for i in range(frequency):
-        for j in range(end_date.day - start_date.day + 1):
-            task_time = start_datetime + timedelta(days=i, hours=interval * j)
-
-            if not for_check:
-                if task_time.date() > today.date():
-                    if 5 < task_time.hour < 22:
-                        time_list.append(task_time)
-
-                elif task_time.date() == today.date():
-                    if task_time.hour > today.hour:
-                        if 5 < task_time.hour < 22:
-                            time_list.append(task_time)
-            else:
-                if 5 < task_time.hour < 22:
-                        time_list.append(task_time)
-
-                        
-    print(time_list)
-    return time_list
 
 def schedule_notifications(report_check: PetsitterCheck):
     time_list = schedule_report_requests(report_check)
