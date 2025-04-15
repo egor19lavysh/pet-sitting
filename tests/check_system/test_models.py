@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import SimpleUploadedFile
 from check_system.models import PetsitterCheck, Report, Reject, RejectImage
 from orders.models import Order
-from pet.models import Category, Breed
+from pet.models import Category, Breed, Pet
 from datetime import date, datetime, timedelta
 
 User = get_user_model()
@@ -29,9 +29,7 @@ class CheckSystemModelsTest(TestCase):
         # Создание категории и породы
         cls.category = Category.objects.create(name="Dog")
         cls.breed = Breed.objects.create(name="Labrador", category=cls.category)
-
-        # Создание заказа
-        cls.order = Order.objects.create(
+        cls.pet = Pet.objects.create(
             name="Персик",
             category=cls.category,
             breed=cls.breed,
@@ -39,6 +37,12 @@ class CheckSystemModelsTest(TestCase):
             weight=25.7,
             certificate=True,
             info="Хороший и послушный пес",
+            owner=cls.owner,
+        )
+
+        # Создание заказа
+        cls.order = Order.objects.create(
+            pet=cls.pet,
             walking=4,
             place=Order.HomeChoices.PETSITTER_HOME,
             owner=cls.owner,
@@ -67,7 +71,7 @@ class CheckSystemModelsTest(TestCase):
         self.assertEqual(self.check_system.order, self.order)
         self.assertEqual(self.check_system.frequency, 3)
         self.assertEqual(self.check_system.interval, 4)
-        self.assertEqual(self.check_system.status, "SUCCESS")
+        self.assertEqual(self.check_system.status, PetsitterCheck.Statuses.IN_PROCESS)
         self.assertEqual(self.check_system.rest, -1)
 
     def test_petsitter_check_str(self):
@@ -189,6 +193,7 @@ class CheckSystemModelsTest(TestCase):
         RejectImage.objects.all().delete()
         PetsitterCheck.objects.all().delete()
         Order.objects.all().delete()
+        Pet.objects.all().delete()
         Category.objects.all().delete()
         Breed.objects.all().delete()
         User.objects.all().delete() 

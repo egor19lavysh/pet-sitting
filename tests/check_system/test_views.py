@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
 from check_system.models import PetsitterCheck, Report, Reject, RejectImage
 from orders.models import Order
-from pet.models import Category, Breed
+from pet.models import Category, Breed, Pet
 from datetime import datetime, timedelta
 
 User = get_user_model()
@@ -40,9 +40,7 @@ class CheckSystemViewsTest(TestCase):
         # Создание категории и породы
         cls.category = Category.objects.create(name="Dog")
         cls.breed = Breed.objects.create(name="Labrador", category=cls.category)
-
-        # Создание заказа
-        cls.order = Order.objects.create(
+        cls.pet = Pet.objects.create(
             name="Персик",
             category=cls.category,
             breed=cls.breed,
@@ -50,6 +48,13 @@ class CheckSystemViewsTest(TestCase):
             weight=25.7,
             certificate=True,
             info="Хороший и послушный пес",
+            owner=cls.owner,
+        )
+
+
+        # Создание заказа
+        cls.order = Order.objects.create(
+            pet=cls.pet,
             walking=4,
             place=Order.HomeChoices.PETSITTER_HOME,
             owner=cls.owner,
@@ -224,6 +229,7 @@ class CheckSystemViewsTest(TestCase):
         RejectImage.objects.all().delete()
         PetsitterCheck.objects.all().delete()
         Order.objects.all().delete()
+        Pet.objects.all().delete()
         Category.objects.all().delete()
         Breed.objects.all().delete()
         User.objects.all().delete() 

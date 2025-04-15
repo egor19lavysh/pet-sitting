@@ -1,8 +1,8 @@
 <h1>Все ваши системы проверки</h1>
-{% if systems %}
-{% for system in systems %}
+{% if object_list %}
+{% for object in object_list %}
 
-<p> <a href="{% url 'check_system:show' system.id %}"> {{ system }} </a></p>
+<p> <a href="{% url 'check_system:show' object.id %}"> {{ object }} </a></p>
 
 {% endfor %}
 

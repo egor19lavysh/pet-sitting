@@ -1,7 +1,6 @@
 from django.shortcuts import get_object_or_404
 from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 from langchain_gigachat.chat_models import GigaChat
-#from pets.settings import API_KEY
 from .models import Report
 from PIL import Image
 
@@ -24,3 +23,5 @@ def prompt(report_img):
 
     return giga.invoke([HumanMessage(content="Что изображено на картинке? Какое состояние животного? Какое у него настроение?", additional_kwargs={"attachments": [img
                                                                                                                                                                   .id_]})]).content
+
+ERROR_MESSAGE = "Почему-то нейросеть не смогла обработать изображение ситтера..."
