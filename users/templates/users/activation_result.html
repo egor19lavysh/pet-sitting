@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Результат активации</title>
+</head>
+<body>
+    <h1>Активация аккаунта</h1>
+    
+    {% if result %}
+        {% if result.success %}
+            <div class="success">
+                <p>Спасибо за подтверждение email. Теперь вы можете зайти в свой аккаунт.</p>
+            </div>
+        {% else %}
+            <div class="error">
+                <p>{{ result.error|default:"Неправильная активационная ссылка!" }}</p>
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="error">
+            <p>Не удалось получить результат активации.</p>
+        </div>
+    {% endif %}
+    
+    <a href="{% url 'main:index' %}">На главную</a>
+</body>
+</html>

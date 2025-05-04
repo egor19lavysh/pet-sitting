@@ -10,7 +10,7 @@ class RegisterUserForm(forms.ModelForm):
 
     class Meta:
         model=User
-        fields=["username", "first_name", "last_name", "email", "photo", "phone", "birth_date", "about", "city", "password"]
+        fields=["username", "first_name", "last_name", "patronymic","email", "photo", "phone", "birth_date", "about", "city", "password"]
         labels = {
             "username" : "login"
         }
@@ -31,4 +31,6 @@ class LoginUserForm(forms.Form):
 class RegisterPetsitterForm(forms.ModelForm):
     class Meta:
         model=Petsitter
-        exclude=["user",]
+        fields=["experience",
+                "categories",
+                "min_price"]

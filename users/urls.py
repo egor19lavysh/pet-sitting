@@ -6,11 +6,11 @@ from . import views
 app_name = "users"
 
 urlpatterns = [
-    path("login/", views.login_user, name="login"),
+    path("login/", views.LoginUserView.as_view(), name="login"),
     path("logout/", views.logout_user, name="logout"),
     path("register/", views.register_types, name="register"),
-    path("register/user", views.register_user, name="register_user"),
-    path("register/petsitter", views.register_petsitter, name="register_petsitter"),
+    path("register/user", views.UserCreate.as_view(), name="register_user"),
+    path("register/petsitter", views.PetsitterCreate.as_view(), name="register_petsitter"),
     path("update/", views.UserUpdate.as_view(), name="update_user"),
     path("delete/", views.UserDelete.as_view(), name="delete_user"),
     path("update/petsitter/", views.PetsitterUpdate.as_view(), name="update_petsitter"),
@@ -34,6 +34,7 @@ urlpatterns = [
     path('password-reset/complete/',
          PasswordResetCompleteView.as_view(template_name="users/password_reset_complete.html"),
          name='password_reset_complete'),
-     path('activate/<uidb64>/<token>/', views.activate, name='activate'),
+     path('activate/<uidb64>/<token>/', views.ActivateAccountView.as_view(), name='activate'),
+     path("activate/pending/", views.get_activation_pending, name="activation_pending")
 
 ]

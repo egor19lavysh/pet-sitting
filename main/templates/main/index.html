@@ -24,7 +24,11 @@
                         <li class="nav_bar_item"><a href="#" class="link_on_page">Стать ситтером</a></li>
                         <li class="nav_bar_item"><a href="#" class="link_on_page">О нас</a></li>
                         <li class="nav_bar_item"><a href="#" class="link_on_page">FAQ</a></li>
+                        {% if request.user.is_authenticated %}
                         <li><a href="{% url "main:user_profile" request.user.username %}"><p class="text_btn">Личный кабинет</p></a></li>
+                        {% else %}
+                        <li><a href="{% url "users:login"%}"><p class="text_btn">Личный кабинет</p></a></li>
+                        {% endif %}
                     </ul>
             </div>
         </div>
